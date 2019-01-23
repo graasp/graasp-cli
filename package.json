@@ -4,7 +4,9 @@
   "description": "A CLI to create apps and labs for the Graasp ecosystem.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"warning: no test specified\" && exit 0",
+    "lint": "eslint .",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
@@ -22,5 +24,15 @@
   "bugs": {
     "url": "https://github.com/graasp/graasp-cli/issues"
   },
-  "homepage": "https://github.com/graasp/graasp-cli#readme"
+  "homepage": "https://github.com/graasp/graasp-cli#readme",
+  "devDependencies": {
+    "@commitlint/cli": "7.3.2",
+    "@commitlint/config-conventional": "7.3.1",
+    "babel-eslint": "10.0.1",
+    "eslint": "5.12.1",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.15.0",
+    "husky": "1.3.1",
+    "standard-version": "4.4.0"
+  }
 }
