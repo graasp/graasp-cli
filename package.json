@@ -1,11 +1,15 @@
 {
   "name": "@graasp/cli",
   "version": "0.1.0",
+  "author": "Juan Carlos Farah",
   "description": "A CLI to create apps and labs for the Graasp ecosystem.",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "echo \"warning: no test specified\" && exit 0",
-    "compile": "babel src --out-dir dist",
+    "compile": "babel src --out-dir lib --ignore **/__tests__",
     "lint": "eslint .",
     "release": "standard-version"
   },
@@ -20,10 +24,12 @@
     "education",
     "cli"
   ],
-  "author": "Juan Carlos Farah",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/graasp/graasp-cli/issues"
+  },
+  "bin": {
+    "graasp": "./lib/index.js"
   },
   "homepage": "https://github.com/graasp/graasp-cli#readme",
   "devDependencies": {
