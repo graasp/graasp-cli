@@ -1,4 +1,13 @@
 import yargs from 'yargs';
+import initStarter from './initStarter';
+import { DEFAULT_STARTER } from './config';
+
+const promisify = fn => (...args) => {
+  Promise.resolve(fn(...args)).then(
+    () => process.exit(0),
+    // err => report.panic(err)
+  );
+};
 
 const createCli = (argv) => {
   const cli = yargs();
@@ -22,8 +31,20 @@ const createCli = (argv) => {
 
   return cli
     .command({
-      command: 'new [rootPath] [starter]',
+      command: 'new [projectDirectory]',
       desc: 'Create new Graasp app.',
+      builder: _ => _.option('s', {
+        alias: 'starter',
+        type: 'string',
+        default: DEFAULT_STARTER,
+        describe: `Set starter. Defaults to ${DEFAULT_STARTER}`,
+      }),
+      handler: promisify(
+        ({
+          starter,
+          projectDirectory,
+        }) => initStarter(projectDirectory, { starter }),
+      ),
     })
     .wrap(cli.terminalWidth())
     .demandCommand(1, 'Pass --help to see all available commands and options.')
