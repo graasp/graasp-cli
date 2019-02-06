@@ -38,3 +38,6 @@ cypress
 # exclude coverage
 /coverage
 .nyc_output
+
+# exclude directories used to test command outputs
+/output
