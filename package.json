@@ -1,6 +1,6 @@
 {
   "name": "@graasp/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Juan Carlos Farah",
   "description": "A CLI to create apps and labs for the Graasp ecosystem.",
   "main": "lib/index.js",
@@ -14,7 +14,7 @@
     "hooks:install": "node node_modules/husky/husky.js install",
     "lint": "eslint .",
     "release": "standard-version",
-    "prepublishOnly": "run-s lint test release",
+    "prepublishOnly": "run-s lint test",
     "prepare": "npm run compile"
   },
   "repository": {
