@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import HostedGitInfo from 'hosted-git-info';
 import { sync as existsSync } from 'fs-exists-cached';
 import { DEFAULT_STARTER } from './config';
+import writeEnvFiles from './writeEnvFiles';
 
 // use execa to spawn a better child process
 const spawn = (cmd, opts = { stdio: 'inherit' }) => {
@@ -113,6 +114,8 @@ const clone = async (hostInfo, rootPath) => {
   console.log('initialized git repository');
 
   await install(rootPath);
+
+  await writeEnvFiles(rootPath);
 
   await commit(rootPath);
 };
