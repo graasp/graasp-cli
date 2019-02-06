@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/graasp/graasp-cli/compare/v0.1.1...v0.2.0) (2019-02-06)
+
+
+### Bug Fixes
+
+* correctly use yarn when it is present ([03be56c](https://github.com/graasp/graasp-cli/commit/03be56c)), closes [#11](https://github.com/graasp/graasp-cli/issues/11)
+
+
+### Features
+
+* initialize a git repository when creating a new app ([9704a1b](https://github.com/graasp/graasp-cli/commit/9704a1b)), closes [#12](https://github.com/graasp/graasp-cli/issues/12)
+
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://github.com/graasp/graasp-cli/compare/v0.1.0...v0.1.1) (2019-02-06)
 
