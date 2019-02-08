@@ -14,8 +14,7 @@ const writeRemoteEnvFile = async (
 ) => {
   const host = env === PROD ? 'apps.graasp.eu' : 'apps.dev.graasp.eu';
   const bucket = `graasp-apps-${env}`;
-  const string = `
-    REACT_APP_GRAASP_DEVELOPER_ID=${graaspDeveloperId}
+  const string = `REACT_APP_GRAASP_DEVELOPER_ID=${graaspDeveloperId}
     REACT_APP_GRAASP_APP_ID=${graaspAppId}
     REACT_APP_GRAASP_DOMAIN=graasp.eu
     REACT_APP_HOST=${host}
@@ -35,8 +34,7 @@ const writeRemoteEnvFile = async (
 };
 
 const writeLocalEnvFile = async (env, rootPath) => {
-  const string = `
-    REACT_APP_GRAASP_DEVELOPER_ID=
+  const string = `REACT_APP_GRAASP_DEVELOPER_ID=
     REACT_APP_GRAASP_APP_ID=
     REACT_APP_GRAASP_DOMAIN=localhost
     REACT_APP_HOST=
@@ -51,22 +49,22 @@ const writeLocalEnvFile = async (env, rootPath) => {
 };
 
 
-const writeEnvFile = async (env, rootPath) => {
+const writeEnvFile = async (env, rootPath, opts) => {
   switch (env) {
     case LOCAL:
       return writeLocalEnvFile(env, rootPath);
     case DEV:
     case PROD:
-      return writeRemoteEnvFile(env, rootPath);
+      return writeRemoteEnvFile(env, rootPath, opts);
     default:
       return false;
   }
 };
 
 
-const writeEnvFiles = async (rootPath) => {
+const writeEnvFiles = async (rootPath, opts) => {
   console.log('writing environment files...');
-  await Promise.all([LOCAL, DEV, PROD].map(env => writeEnvFile(env, rootPath)));
+  await Promise.all([LOCAL, DEV, PROD].map(env => writeEnvFile(env, rootPath, opts)));
   console.log('wrote environment files');
 };
 

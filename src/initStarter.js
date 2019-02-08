@@ -4,7 +4,7 @@ import execa from 'execa';
 import fs from 'fs-extra';
 import HostedGitInfo from 'hosted-git-info';
 import { sync as existsSync } from 'fs-exists-cached';
-import { DEFAULT_STARTER } from './config';
+import { DEFAULT_PATH, DEFAULT_STARTER } from './config';
 import writeEnvFiles from './writeEnvFiles';
 
 // use execa to spawn a better child process
@@ -108,35 +108,54 @@ const clone = async (hostInfo, rootPath) => {
   console.log('created starter directory layout');
 
   await fs.remove(path.join(rootPath, '.git'));
+};
 
-  await initGit(rootPath);
+const initStarter = async (options = {}) => {
+  const {
+    starter = DEFAULT_STARTER,
+    name,
+    type,
+    graaspDeveloperId,
+    graaspAppId,
+    awsAccessKeyId,
+    awsSecretAccessKey,
+    p = DEFAULT_PATH,
+  } = options;
+
+  // enforce naming convention
+  const projectDirectory = path.join(p, `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase());
+
+  // check for existing project in project directory
+  if (existsSync(path.join(projectDirectory, 'package.json'))) {
+    console.error(`destination path '${projectDirectory}' is already an npm project`);
+    return false;
+  }
+
+  // check for existing git repo in project directory
+  if (existsSync(path.join(projectDirectory, '.git'))) {
+    console.error(`destination path '${projectDirectory}' is already a git repository`);
+    return false;
+  }
+
+  // clone starter kit to project directory
+  const hostedInfo = HostedGitInfo.fromUrl(starter);
+  await clone(hostedInfo, projectDirectory);
+
+  await initGit(projectDirectory);
 
   console.log('initialized git repository');
 
-  await install(rootPath);
+  await install(projectDirectory);
 
-  await writeEnvFiles(rootPath);
+  // write environment files
+  await writeEnvFiles(projectDirectory, {
+    graaspDeveloperId,
+    graaspAppId,
+    awsAccessKeyId,
+    awsSecretAccessKey,
+  });
 
-  await commit(rootPath);
-};
-
-const initStarter = async (projectDirectory, options = {}) => {
-  const rootPath = projectDirectory || process.cwd();
-
-  const { starter = DEFAULT_STARTER } = options;
-
-  if (existsSync(path.join(rootPath, 'package.json'))) {
-    console.error(`destination path '${rootPath}' is already an npm project`);
-    return false;
-  }
-
-  if (existsSync(path.join(rootPath, '.git'))) {
-    console.error(`destination path '${rootPath}' is already a git repository`);
-    return false;
-  }
-
-  const hostedInfo = HostedGitInfo.fromUrl(starter);
-  return clone(hostedInfo, rootPath);
+  return commit(projectDirectory);
 };
 
 export default initStarter;
