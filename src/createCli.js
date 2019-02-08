@@ -1,5 +1,5 @@
 import yargs from 'yargs';
-import initStarter from './initStarter';
+import prompt from './prompt';
 import { DEFAULT_STARTER } from './config';
 
 const promisify = fn => (...args) => {
@@ -31,20 +31,27 @@ const createCli = (argv) => {
 
   return cli
     .command({
-      command: 'new [projectDirectory]',
+      command: 'new',
       desc: 'Create new Graasp app.',
       builder: _ => _.option('s', {
         alias: 'starter',
         type: 'string',
         default: DEFAULT_STARTER,
         describe: `Set starter. Defaults to ${DEFAULT_STARTER}`,
+      }).option('f', {
+        alias: 'framework',
+        type: 'string',
+        describe: 'Set development framework (e.g. React, Angular)',
+      }).option('t', {
+        alias: 'type',
+        choices: ['app', 'lab'],
+        describe: 'Type of application (app or lab)',
+      }).option('p', {
+        alias: 'path',
+        type: 'string',
+        describe: 'Path where project directory will be set up.',
       }),
-      handler: promisify(
-        ({
-          starter,
-          projectDirectory,
-        }) => initStarter(projectDirectory, { starter }),
-      ),
+      handler: promisify(prompt),
     })
     .wrap(cli.terminalWidth())
     .demandCommand(1, 'Pass --help to see all available commands and options.')
