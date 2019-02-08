@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/graasp/graasp-cli/compare/v0.2.0...v0.3.0) (2019-02-08)
+
+
+### Features
+
+* create interactive dialogue to create new app ([bf17e93](https://github.com/graasp/graasp-cli/commit/bf17e93)), closes [#15](https://github.com/graasp/graasp-cli/issues/15)
+* write the default environment files ([c0bf273](https://github.com/graasp/graasp-cli/commit/c0bf273)), closes [#16](https://github.com/graasp/graasp-cli/issues/16)
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/graasp/graasp-cli/compare/v0.1.1...v0.2.0) (2019-02-06)
 
