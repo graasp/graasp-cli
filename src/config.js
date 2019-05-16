@@ -10,3 +10,6 @@ export const PROD = 'prod';
 // keys
 export const AWS_ACCESS_KEY_ID_LENGTH = 20;
 export const AWS_SECRET_ACCESS_KEY_LENGTH = 40;
+
+// file names
+export const GRAASP_IGNORE_FILE = '.graaspignore';
