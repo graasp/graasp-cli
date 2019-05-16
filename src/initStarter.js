@@ -1,11 +1,16 @@
+import _ from 'lodash';
 import path from 'path';
 import { execSync } from 'child_process';
 import execa from 'execa';
 import fs from 'fs-extra';
+import util from 'util';
 import HostedGitInfo from 'hosted-git-info';
+import del from 'del';
 import { sync as existsSync } from 'fs-exists-cached';
-import { DEFAULT_PATH, DEFAULT_STARTER } from './config';
+import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config';
 import writeEnvFiles from './writeEnvFiles';
+
+const readFile = util.promisify(fs.readFile);
 
 // use execa to spawn a better child process
 const spawn = (cmd, opts = { stdio: 'inherit' }) => {
@@ -38,6 +43,29 @@ const install = async (rootPath) => {
   try {
     const cmd = shouldUseYarn() ? spawn('yarnpkg') : spawn('npm install');
     await cmd;
+  } finally {
+    process.chdir(prevDir);
+  }
+};
+
+// remove files in .graaspignore file
+const removeIgnoredFiles = async (rootPath) => {
+  const prevDir = process.cwd();
+
+  console.log('removing ignored files');
+  process.chdir(rootPath);
+
+  try {
+    const text = await readFile(GRAASP_IGNORE_FILE, { encoding: 'utf8' });
+    const lines = text.split('\n');
+
+    // pattern cannot be empty
+    const files = lines.filter(line => line !== '');
+
+    // delete matching files, including hidden ones
+    del.sync(files, { dot: true });
+  } catch (e) {
+    console.error(e);
   } finally {
     process.chdir(prevDir);
   }
@@ -110,6 +138,15 @@ const clone = async (hostInfo, rootPath) => {
   await fs.remove(path.join(rootPath, '.git'));
 };
 
+const writeReadme = async (rootPath, name, type) => {
+  const string = `# Graasp ${_.capitalize(type)}: ${name}`;
+  try {
+    await fs.writeFile(path.join(rootPath, 'README.md'), string, 'utf8');
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const initStarter = async (options = {}) => {
   const {
     starter = DEFAULT_STARTER,
@@ -141,6 +178,11 @@ const initStarter = async (options = {}) => {
   const hostedInfo = HostedGitInfo.fromUrl(starter);
   await clone(hostedInfo, projectDirectory);
 
+  // only remove ignored files if graaspignore file detected
+  if (existsSync(path.join(projectDirectory, GRAASP_IGNORE_FILE))) {
+    await removeIgnoredFiles(projectDirectory);
+  }
+
   await initGit(projectDirectory);
 
   console.log('initialized git repository');
@@ -154,6 +196,9 @@ const initStarter = async (options = {}) => {
     awsAccessKeyId,
     awsSecretAccessKey,
   });
+
+  // write readme
+  await writeReadme(projectDirectory, name, type);
 
   return commit(projectDirectory);
 };
