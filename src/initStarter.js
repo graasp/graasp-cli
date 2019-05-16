@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import path from 'path';
 import { execSync } from 'child_process';
 import execa from 'execa';
@@ -137,6 +138,15 @@ const clone = async (hostInfo, rootPath) => {
   await fs.remove(path.join(rootPath, '.git'));
 };
 
+const writeReadme = async (rootPath, name, type) => {
+  const string = `# Graasp ${_.capitalize(type)}: ${name}`;
+  try {
+    await fs.writeFile(path.join(rootPath, 'README.md'), string, 'utf8');
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const initStarter = async (options = {}) => {
   const {
     starter = DEFAULT_STARTER,
@@ -186,6 +196,9 @@ const initStarter = async (options = {}) => {
     awsAccessKeyId,
     awsSecretAccessKey,
   });
+
+  // write readme
+  await writeReadme(projectDirectory, name, type);
 
   return commit(projectDirectory);
 };
