@@ -2,7 +2,7 @@ import yargs from 'yargs';
 import prompt from './prompt';
 import { DEFAULT_STARTER } from './config';
 
-const promisify = fn => (...args) => {
+const promisify = (fn) => (...args) => {
   Promise.resolve(fn(...args)).then(
     () => process.exit(0),
     // err => report.panic(err)
@@ -33,7 +33,7 @@ const createCli = (argv) => {
     .command({
       command: 'new',
       desc: 'Create new Graasp app.',
-      builder: _ => _.option('s', {
+      builder: (_) => _.option('s', {
         alias: 'starter',
         type: 'string',
         default: DEFAULT_STARTER,

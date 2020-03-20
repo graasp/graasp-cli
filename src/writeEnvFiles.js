@@ -64,7 +64,7 @@ const writeEnvFile = async (env, rootPath, opts) => {
 
 const writeEnvFiles = async (rootPath, opts) => {
   console.log('writing environment files...');
-  await Promise.all([LOCAL, DEV, PROD].map(env => writeEnvFile(env, rootPath, opts)));
+  await Promise.all([LOCAL, DEV, PROD].map((env) => writeEnvFile(env, rootPath, opts)));
   console.log('wrote environment files');
 };
 

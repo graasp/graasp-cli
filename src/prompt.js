@@ -61,7 +61,7 @@ const prompt = async (opts) => {
           name: 'Lab',
         },
       ],
-      filter: val => val.toLowerCase(),
+      filter: (val) => val.toLowerCase(),
       when: () => Boolean(!type),
     },
     {
@@ -74,7 +74,7 @@ const prompt = async (opts) => {
           checked: true,
         },
       ],
-      filter: val => val.toLowerCase(),
+      filter: (val) => val.toLowerCase(),
     },
     {
       type: 'confirm',
@@ -92,7 +92,7 @@ const prompt = async (opts) => {
       type: 'input',
       name: 'graaspDeveloperId',
       message: 'Graasp Developer ID',
-      when: responses => Boolean(responses.ecosystem),
+      when: (responses) => Boolean(responses.ecosystem),
       validate: validateGraaspDeveloperId,
     },
     {
@@ -100,14 +100,14 @@ const prompt = async (opts) => {
       name: 'graaspAppId',
       message: 'Graasp App ID',
       default: () => ObjectId().str,
-      when: responses => Boolean(responses.ecosystem),
+      when: (responses) => Boolean(responses.ecosystem),
       validate: validateGraaspAppId,
     },
     {
       type: 'input',
       name: 'awsAccessKeyId',
       message: 'AWS Access Key ID',
-      when: responses => Boolean(responses.ecosystem),
+      when: (responses) => Boolean(responses.ecosystem),
       validate: validateAwsAccessKeyId,
     },
     {
@@ -115,7 +115,7 @@ const prompt = async (opts) => {
       name: 'awsSecretAccessKey',
       message: 'AWS Secret Access Key',
       mask: '*',
-      when: responses => Boolean(responses.ecosystem),
+      when: (responses) => Boolean(responses.ecosystem),
       validate: validateAwsSecretAccessKey,
     },
   ]);

@@ -60,7 +60,7 @@ const removeIgnoredFiles = async (rootPath) => {
     const lines = text.split('\n');
 
     // pattern cannot be empty
-    const files = lines.filter(line => line !== '');
+    const files = lines.filter((line) => line !== '');
 
     // delete matching files, including hidden ones
     del.sync(files, { dot: true });
