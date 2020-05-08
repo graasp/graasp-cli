@@ -1,6 +1,6 @@
 {
   "name": "@graasp/cli",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Juan Carlos Farah",
   "description": "A CLI to create apps and labs for the Graasp ecosystem.",
   "main": "lib/index.js",

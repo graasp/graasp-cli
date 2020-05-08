@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.2](https://github.com/graasp/graasp-cli/compare/v0.4.1...v0.4.2) (2020-05-08)
+
+
+### Bug Fixes
+
+* fix issue with missing test env file ([367b8c7](https://github.com/graasp/graasp-cli/commit/367b8c7c3b498eeb034b2e9cfe71dee203f901b3))
+
 ### [0.4.1](https://github.com/graasp/graasp-cli/compare/v0.4.0...v0.4.1) (2020-03-20)
 
 
