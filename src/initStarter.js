@@ -105,6 +105,7 @@ const commit = async (rootPath) => {
     // babel-eslint version incompatible with create-react-app, so if we get to
     // this state, we remove the git files and show a message to the user
     try {
+      console.error(e);
       console.log('could not initialize the git repository');
       console.log('is your commit author config set?');
       console.log('might you be running this command inside a package with babel-eslint?');

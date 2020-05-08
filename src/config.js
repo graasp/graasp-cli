@@ -3,6 +3,7 @@ export const DEFAULT_FRAMEWORK = 'react';
 export const DEFAULT_PATH = './';
 
 // environments
+export const TEST = 'test';
 export const LOCAL = 'local';
 export const DEV = 'dev';
 export const PROD = 'prod';
