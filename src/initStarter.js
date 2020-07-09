@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import path from 'path';
 import { execSync } from 'child_process';
-import execa from 'execa';
 import fs from 'fs-extra';
 import util from 'util';
 import HostedGitInfo from 'hosted-git-info';
@@ -9,14 +8,9 @@ import del from 'del';
 import { sync as existsSync } from 'fs-exists-cached';
 import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config';
 import writeEnvFiles from './writeEnvFiles';
+import { spawn } from './utils';
 
 const readFile = util.promisify(fs.readFile);
-
-// use execa to spawn a better child process
-const spawn = (cmd, opts = { stdio: 'inherit' }) => {
-  const [file, ...args] = cmd.split(/\s+/);
-  return execa(file, args, opts);
-};
 
 /**
  * checks for the existence of yarn package
@@ -96,7 +90,9 @@ const commit = async (rootPath) => {
     await spawn('git add -A', { stdio: 'ignore' });
 
     // cannot spawn this because of the way we are splitting the command
-    execSync('git commit -m "chore: initial commit from graasp cli"', { stdio: 'ignore' });
+    execSync('git commit -m "chore: initial commit from graasp cli"', {
+      stdio: 'ignore',
+    });
     console.log('performed initial commit');
   } catch (e) {
     // if we successfully initialized but couldn't commit, maybe the commit
@@ -108,7 +104,9 @@ const commit = async (rootPath) => {
       console.error(e);
       console.log('could not initialize the git repository');
       console.log('is your commit author config set?');
-      console.log('might you be running this command inside a package with babel-eslint?');
+      console.log(
+        'might you be running this command inside a package with babel-eslint?',
+      );
       await fs.remove('.git');
     } catch (removeErr) {
       // ignore
@@ -170,17 +168,24 @@ const initStarter = async (options = {}) => {
   } = options;
 
   // enforce naming convention
-  const projectDirectory = path.join(p, `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase());
+  const projectDirectory = path.join(
+    p,
+    `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase(),
+  );
 
   // check for existing project in project directory
   if (existsSync(path.join(projectDirectory, 'package.json'))) {
-    console.error(`destination path '${projectDirectory}' is already an npm project`);
+    console.error(
+      `destination path '${projectDirectory}' is already an npm project`,
+    );
     return false;
   }
 
   // check for existing git repo in project directory
   if (existsSync(path.join(projectDirectory, '.git'))) {
-    console.error(`destination path '${projectDirectory}' is already a git repository`);
+    console.error(
+      `destination path '${projectDirectory}' is already a git repository`,
+    );
     return false;
   }
 
