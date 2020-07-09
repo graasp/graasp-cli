@@ -1,5 +1,6 @@
 import yargs from 'yargs';
 import prompt from './prompt';
+import deploy from './deploy';
 import { DEFAULT_STARTER } from './config';
 
 const promisify = (fn) => (...args) => {
@@ -33,25 +34,40 @@ const createCli = (argv) => {
     .command({
       command: 'new',
       desc: 'Create new Graasp app.',
-      builder: (_) => _.option('s', {
-        alias: 'starter',
-        type: 'string',
-        default: DEFAULT_STARTER,
-        describe: `Set starter. Defaults to ${DEFAULT_STARTER}`,
-      }).option('f', {
-        alias: 'framework',
-        type: 'string',
-        describe: 'Set development framework (e.g. React, Angular)',
-      }).option('t', {
-        alias: 'type',
-        choices: ['app', 'lab'],
-        describe: 'Type of application (app or lab)',
-      }).option('p', {
-        alias: 'path',
-        type: 'string',
-        describe: 'Path where project directory will be set up.',
-      }),
+      builder: (_) =>
+        _.option('s', {
+          alias: 'starter',
+          type: 'string',
+          default: DEFAULT_STARTER,
+          describe: `Set starter. Defaults to ${DEFAULT_STARTER}`,
+        })
+          .option('f', {
+            alias: 'framework',
+            type: 'string',
+            describe: 'Set development framework (e.g. React, Angular)',
+          })
+          .option('t', {
+            alias: 'type',
+            choices: ['app', 'lab'],
+            describe: 'Type of application (app or lab)',
+          })
+          .option('p', {
+            alias: 'path',
+            type: 'string',
+            describe: 'Path where project directory will be set up.',
+          }),
       handler: promisify(prompt),
+    })
+    .command({
+      command: 'deploy',
+      desc: 'Deploy the Graasp app',
+      builder: (_) =>
+        _.option('p', {
+          alias: 'path',
+          type: 'string',
+          describe: 'Path to the Graasp app that shall be deployed',
+        }),
+      handler: promisify(deploy),
     })
     .wrap(cli.terminalWidth())
     .demandCommand(1, 'Pass --help to see all available commands and options.')
@@ -60,6 +76,5 @@ const createCli = (argv) => {
     .recommendCommands()
     .parse(argv.slice(2));
 };
-
 
 export default createCli;
