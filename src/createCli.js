@@ -3,13 +3,6 @@ import prompt from './prompt';
 import deploy from './deploy';
 import { DEFAULT_STARTER } from './config';
 
-const promisify = (fn) => (...args) => {
-  Promise.resolve(fn(...args)).then(
-    () => process.exit(0),
-    // err => report.panic(err)
-  );
-};
-
 const createCli = (argv) => {
   const cli = yargs();
 
@@ -56,7 +49,7 @@ const createCli = (argv) => {
             type: 'string',
             describe: 'Path where project directory will be set up.',
           }),
-      handler: promisify(prompt),
+      handler: prompt,
     })
     .command({
       command: 'deploy',
@@ -65,9 +58,10 @@ const createCli = (argv) => {
         _.option('p', {
           alias: 'path',
           type: 'string',
+          default: '.',
           describe: 'Path to the Graasp app that shall be deployed',
         }),
-      handler: promisify(deploy),
+      handler: deploy,
     })
     .wrap(cli.terminalWidth())
     .demandCommand(1, 'Pass --help to see all available commands and options.')
