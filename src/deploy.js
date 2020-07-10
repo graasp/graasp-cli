@@ -69,7 +69,7 @@ const deploy = async (opts) => {
   } = process.env;
   /* eslint-enable no-unused-vars */
 
-  // validate environment variables concerning the app
+  // ensure the correct app variables are defined
   if (
     !varIsDefined(REACT_APP_HOST) ||
     !varIsDefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
@@ -85,7 +85,7 @@ const deploy = async (opts) => {
     return false;
   }
 
-  // validate environment variables concerning aws credentials
+  // ensure the correct aws credentials are defined
   if (
     !varIsDefined(BUCKET) ||
     !varIsDefined(AWS_ACCESS_KEY_ID) ||
@@ -145,6 +145,34 @@ const deploy = async (opts) => {
   console.log(
     `published app to https://${REACT_APP_HOST}/${APP_PATH}/index.html`,
   );
+
+  // ensure the correct distribution variables are defined
+  if (!varIsDefined(DISTRIBUTION)) {
+    console.error('error: environment variable DISTRIBUTION is not defined');
+    console.error(
+      'error: contact your favourite Graasp engineer if you keep running into trouble',
+    );
+    return false;
+  }
+
+  // invalidate cloudfront distribution
+  const pathsToInvalidate = [`/${APP_PATH}/*`];
+  const invalidationParams = {
+    DistributionId: DISTRIBUTION,
+    InvalidationBatch: {
+      CallerReference: new Date().toString(),
+      Paths: {
+        Quantity: pathsToInvalidate.length,
+        Items: pathsToInvalidate,
+      },
+    },
+  };
+  const cloudfront = new AWS.CloudFront();
+  cloudfront.createInvalidation(invalidationParams, function (err, data) {
+    if (err) console.log(err, err.stack);
+    // an error occurred
+    else console.log(data); // successful response
+  });
 
   return true;
 };
