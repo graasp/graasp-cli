@@ -1,7 +1,12 @@
 import yargs from 'yargs';
 import prompt from './prompt';
 import deploy from './deploy';
-import { DEFAULT_STARTER } from './config';
+import {
+  DEFAULT_STARTER,
+  DEFAULT_BUILD_DIR,
+  DEFAULT_APP_VERSION,
+  DEFAULT_ENV,
+} from './config';
 
 const createCli = (argv) => {
   const cli = yargs();
@@ -55,12 +60,24 @@ const createCli = (argv) => {
       command: 'deploy',
       desc: 'Deploy the Graasp app',
       builder: (_) =>
-        _.option('p', {
-          alias: 'path',
+        _.option('t', {
+          alias: 'tag',
           type: 'string',
-          default: '.',
-          describe: 'Path to the Graasp app that shall be deployed',
-        }),
+          default: DEFAULT_APP_VERSION,
+          describe: 'Tag the deployment with a version',
+        })
+          .option('e', {
+            alias: 'env',
+            type: 'string',
+            default: DEFAULT_ENV,
+            describe: 'Environment used to load variables from',
+          })
+          .option('b', {
+            alias: 'build',
+            type: 'string',
+            default: DEFAULT_BUILD_DIR,
+            describe: 'Path to the build directory that is deployed',
+          }),
       handler: deploy,
     })
     .wrap(cli.terminalWidth())

@@ -1,29 +1,57 @@
 import AWS from 'aws-sdk';
 import s3 from 's3-node-client';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
-const path = require('path');
+const validateTag = (tag) => {
+  console.log(`warning: tag ${tag} is not validated. Needs to be implemented`);
+  return true;
+  /* Does not work yet ====================> Find out why...
+  // prettier-ignore
+  const pattern = new RegExp('^v([0-9]+\.){0,2}(\*|[0-9]+)$');
+  if (tag === 'latest' || tag.test(pattern)) {
+    console.log(`info: validated tag ${tag}`);
+    return true;
+  }
+  console.error(`error: unable to validate version '${tag}'`);
+  return false;
+  */
+};
 
-// default build directory
-const BUILD = 'build/';
+const validateEnv = async (env) => {
+  if (fs.existsSync(env)) {
+    console.log(`info: validated environment file ${env}`);
+    return true;
+  }
+  console.log(`error: environment file '${env}' does not exist`);
+  return false;
+};
 
-/**
- * Returns an object with all variables loaded from a environment
- * @param {string} environmentName is the suffix after .env.*
- */
+const validateBuild = async (build) => {
+  if (fs.existsSync(build)) {
+    console.log(`info: validated build directory ${build}`);
+    return true;
+  }
+  console.log(`error: build directory '${build}' does not exist`);
+  return false;
+};
+
+const varIsDefined = (variable) => {
+  return typeof variable !== 'undefined';
+};
 
 const deploy = async (opts) => {
-  // const { path } = opts;
+  const { tag, env, build } = opts;
 
-  const usageMessage = console.log(
-    'usage: $0 [-e <path/to/file>] [-v <version string>] [-b <path/to/build>]',
-  );
-
-  console.log(`Exectued with path: ${opts.path}`);
-  console.log(usageMessage);
+  // Validate command options
+  if (!validateTag(tag) || !validateEnv(env) || !validateBuild(build)) {
+    console.error('Abort...');
+    return false;
+  }
 
   // fetch environment variables
-  dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') });
+  // dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') });
+  dotenv.config({ path: env });
   /* eslint-disable no-unused-vars */
   const {
     REACT_APP_GRAASP_DEVELOPER_ID,
@@ -41,6 +69,44 @@ const deploy = async (opts) => {
   } = process.env;
   /* eslint-enable no-unused-vars */
 
+  // validate environment variables concerning the app
+  if (
+    !varIsDefined(REACT_APP_HOST) ||
+    !varIsDefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
+    !varIsDefined(REACT_APP_GRAASP_APP_ID)
+  ) {
+    console.error(
+      'error: environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined',
+    );
+    console.error(
+      'error: you can specify them through a .env file in the app root folder',
+    );
+    console.error('error: or through another file specified with the -e flag');
+    return false;
+  }
+
+  // validate environment variables concerning aws credentials
+  if (
+    !varIsDefined(BUCKET) ||
+    !varIsDefined(AWS_ACCESS_KEY_ID) ||
+    !varIsDefined(AWS_SECRET_ACCESS_KEY)
+  ) {
+    console.error(
+      'error: environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined',
+    );
+    console.error(
+      'error: make sure you setup your credentials file correctly using the scripts/setup.sh script',
+    );
+    console.error(
+      'error: and contact your favourite Graasp engineer if you keep running into trouble',
+    );
+  }
+
+  console.log(
+    `info: publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
+  );
+
+  // configure the deployment
   AWS.config.getCredentials(function (err) {
     if (err) console.error(err.stack);
     // credentials not loaded
@@ -54,7 +120,7 @@ const deploy = async (opts) => {
   const client = s3.createClient({ s3Client: new AWS.S3() });
 
   const params = {
-    localDir: BUILD,
+    localDir: build,
     deleteRemoved: true, // default false, whether to remove s3 objects
     // that have no corresponding local file.
 
