@@ -16,6 +16,6 @@ export const AWS_SECRET_ACCESS_KEY_LENGTH = 40;
 export const GRAASP_IGNORE_FILE = '.graaspignore';
 
 // deploy settings
-export const DEFAULT_BUILD_DIR = 'build/';
+export const DEFAULT_BUILD_DIR = './build';
 export const DEFAULT_APP_VERSION = 'latest';
 export const DEFAULT_ENV = '.env.dev';

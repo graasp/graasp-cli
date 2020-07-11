@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk';
+import aws from 'aws-sdk';
 import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
@@ -100,7 +100,7 @@ const deploy = async (opts) => {
   );
 
   // configure the deployment
-  AWS.config.getCredentials((err) => {
+  aws.config.getCredentials((err) => {
     if (err) {
       // credentials not loaded
       console.error(err.stack);
@@ -109,7 +109,7 @@ const deploy = async (opts) => {
 
   const APP_PATH = `${REACT_APP_GRAASP_DEVELOPER_ID}/${REACT_APP_GRAASP_APP_ID}/${REACT_APP_VERSION}`;
 
-  const client = s3.createClient({ s3Client: new AWS.S3() });
+  const client = s3.createClient({ s3Client: new aws.S3() });
 
   const params = {
     localDir: build,
@@ -166,7 +166,7 @@ const deploy = async (opts) => {
       },
     },
   };
-  const cloudfront = new AWS.CloudFront();
+  const cloudfront = new aws.CloudFront();
   cloudfront.createInvalidation(invalidationParams, (err, data) => {
     if (err) console.log(err, err.stack);
     // an error occurred
