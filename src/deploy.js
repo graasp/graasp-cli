@@ -5,6 +5,7 @@ import fs from 'fs';
 import cliProgress from 'cli-progress';
 
 const validateTag = (tag) => {
+  // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
   // prettier-ignore
   // eslint-disable-next-line no-useless-escape
   const pattern = new RegExp('v\\d+(\.\\d+){0,2}$');
