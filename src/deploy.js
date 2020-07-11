@@ -5,21 +5,18 @@ import fs from 'fs';
 import cliProgress from 'cli-progress';
 
 const validateTag = (tag) => {
-  console.log(`warning: tag ${tag} is not validated. Needs to be implemented`);
-  return true;
-  /* Does not work yet ====================> Find out why...
   // prettier-ignore
-  const pattern = new RegExp('^v([0-9]+\.){0,2}(\*|[0-9]+)$');
-  if (tag === 'latest' || tag.test(pattern)) {
+  // eslint-disable-next-line no-useless-escape
+  const pattern = new RegExp('v\\d+(\.\\d+){0,2}$');
+  if (tag === 'latest' || pattern.test(tag)) {
     console.log(`info: validated tag ${tag}`);
     return true;
   }
   console.error(`error: unable to validate version '${tag}'`);
   return false;
-  */
 };
 
-const validateEnv = async (env) => {
+const validateEnv = (env) => {
   if (fs.existsSync(env)) {
     console.log(`info: validated environment file ${env}`);
     return true;
@@ -28,7 +25,7 @@ const validateEnv = async (env) => {
   return false;
 };
 
-const validateBuild = async (build) => {
+const validateBuild = (build) => {
   if (fs.existsSync(build)) {
     console.log(`info: validated build directory ${build}`);
     return true;
