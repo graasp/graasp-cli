@@ -100,7 +100,7 @@ const deploy = async (opts) => {
   );
 
   // configure the deployment
-  AWS.config.getCredentials(function (err) {
+  AWS.config.getCredentials((err) => {
     if (err) {
       // credentials not loaded
       console.error(err.stack);
@@ -128,14 +128,14 @@ const deploy = async (opts) => {
     cliProgress.Presets.shades_classic,
   );
   const uploader = client.uploadDir(params);
-  uploader.on('error', function (err) {
+  uploader.on('error', (err) => {
     console.error('unable to sync:', err.stack);
   });
-  uploader.on('progress', function () {
+  uploader.on('progress', () => {
     progressBar.start(uploader.progressTotal, 0);
     progressBar.update(uploader.progressAmount);
   });
-  uploader.on('end', function () {
+  uploader.on('end', () => {
     progressBar.stop();
     // TODO: insert here code that should be executed once the upload is done
     //       e.g. invalidate cache
@@ -167,7 +167,7 @@ const deploy = async (opts) => {
     },
   };
   const cloudfront = new AWS.CloudFront();
-  cloudfront.createInvalidation(invalidationParams, function (err, data) {
+  cloudfront.createInvalidation(invalidationParams, (err, data) => {
     if (err) console.log(err, err.stack);
     // an error occurred
     else console.log(data); // successful response
