@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import cliProgress from 'cli-progress';
 
 const validateTag = (tag) => {
   console.log(`warning: tag ${tag} is not validated. Needs to be implemented`);
@@ -108,10 +109,9 @@ const deploy = async (opts) => {
 
   // configure the deployment
   AWS.config.getCredentials(function (err) {
-    if (err) console.error(err.stack);
-    // credentials not loaded
-    else {
-      console.log('Access key:', AWS.config.credentials.accessKeyId);
+    if (err) {
+      // credentials not loaded
+      console.error(err.stack);
     }
   });
 
@@ -131,19 +131,26 @@ const deploy = async (opts) => {
       // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
     },
   };
+  const progressBar = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic,
+  );
   const uploader = client.uploadDir(params);
   uploader.on('error', function (err) {
     console.error('unable to sync:', err.stack);
   });
   uploader.on('progress', function () {
-    console.log('progress', uploader.progressAmount, uploader.progressTotal);
+    progressBar.start(uploader.progressTotal, 0);
+    progressBar.update(uploader.progressAmount);
   });
   uploader.on('end', function () {
-    console.log('done uploading');
+    progressBar.stop();
+    // TODO: insert here code that should be executed once the upload is done
+    //       e.g. invalidate cache
   });
 
   console.log(
-    `published app to https://${REACT_APP_HOST}/${APP_PATH}/index.html`,
+    `info: published app to https://${REACT_APP_HOST}/${APP_PATH}/index.html`,
   );
 
   // ensure the correct distribution variables are defined
