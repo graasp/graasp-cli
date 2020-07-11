@@ -35,7 +35,7 @@ const validateBuild = (build) => {
   return false;
 };
 
-const varIsDefined = (variable) => {
+const isDefined = (variable) => {
   return typeof variable !== 'undefined';
 };
 
@@ -70,9 +70,9 @@ const deploy = async (opts) => {
 
   // ensure the correct app variables are defined
   if (
-    !varIsDefined(REACT_APP_HOST) ||
-    !varIsDefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
-    !varIsDefined(REACT_APP_GRAASP_APP_ID)
+    !isDefined(REACT_APP_HOST) ||
+    !isDefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
+    !isDefined(REACT_APP_GRAASP_APP_ID)
   ) {
     console.error(
       'error: environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined',
@@ -86,9 +86,9 @@ const deploy = async (opts) => {
 
   // ensure the correct aws credentials are defined
   if (
-    !varIsDefined(BUCKET) ||
-    !varIsDefined(AWS_ACCESS_KEY_ID) ||
-    !varIsDefined(AWS_SECRET_ACCESS_KEY)
+    !isDefined(BUCKET) ||
+    !isDefined(AWS_ACCESS_KEY_ID) ||
+    !isDefined(AWS_SECRET_ACCESS_KEY)
   ) {
     console.error(
       'error: environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined',
@@ -152,7 +152,7 @@ const deploy = async (opts) => {
   );
 
   // ensure the correct distribution variables are defined
-  if (!varIsDefined(DISTRIBUTION)) {
+  if (!isDefined(DISTRIBUTION)) {
     console.error('error: environment variable DISTRIBUTION is not defined');
     console.error(
       'error: contact your favourite Graasp engineer if you keep running into trouble',
