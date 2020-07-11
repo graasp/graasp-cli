@@ -51,22 +51,16 @@ const deploy = async (opts) => {
   // fetch environment variables
   // dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') });
   dotenv.config({ path: env });
-  /* eslint-disable no-unused-vars */
   const {
     REACT_APP_GRAASP_DEVELOPER_ID,
     REACT_APP_GRAASP_APP_ID,
-    REACT_APP_GRAASP_DOMAIN,
     REACT_APP_HOST,
     REACT_APP_VERSION,
-    REACT_APP_BASE,
-    NODE_ENV,
     BUCKET,
-    AWS_DEFAULT_REGION,
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
     DISTRIBUTION,
   } = process.env;
-  /* eslint-enable no-unused-vars */
 
   // ensure the correct app variables are defined
   if (
