@@ -58,7 +58,7 @@ const createCli = (argv) => {
     })
     .command({
       command: 'deploy',
-      desc: 'Deploy the Graasp app',
+      desc: 'Deploy a Graasp app to AWS',
       builder: (_) =>
         _.option('t', {
           alias: 'tag',

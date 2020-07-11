@@ -12,6 +12,7 @@
         "allow": ["_id"]
       }
     ],
-    "import/no-named-as-default": 0
+    "no-console": "off",
+    "import/no-named-as-default": "off"
   }
 }
