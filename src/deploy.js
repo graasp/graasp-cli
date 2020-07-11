@@ -3,6 +3,7 @@ import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import cliProgress from 'cli-progress';
+import { isDefined } from './utils';
 
 const validateTag = (tag) => {
   // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
@@ -35,34 +36,11 @@ const validateBuild = (build) => {
   return false;
 };
 
-const isDefined = (variable) => {
-  return typeof variable !== 'undefined';
-};
-
-const deploy = async (opts) => {
-  const { tag, env, build } = opts;
-
-  // Validate command options
-  if (!validateTag(tag) || !validateEnv(env) || !validateBuild(build)) {
-    console.error('Abort...');
-    return false;
-  }
-
-  // fetch environment variables
-  // dotenv.config({ path: path.resolve(process.cwd(), '.env.dev') });
-  dotenv.config({ path: env });
-  const {
-    REACT_APP_GRAASP_DEVELOPER_ID,
-    REACT_APP_GRAASP_APP_ID,
-    REACT_APP_HOST,
-    REACT_APP_VERSION,
-    BUCKET,
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    DISTRIBUTION,
-  } = process.env;
-
-  // ensure the correct app variables are defined
+const validateAppVariables = ({
+  REACT_APP_HOST,
+  REACT_APP_GRAASP_DEVELOPER_ID,
+  REACT_APP_GRAASP_APP_ID,
+}) => {
   if (
     !isDefined(REACT_APP_HOST) ||
     !isDefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
@@ -77,8 +55,14 @@ const deploy = async (opts) => {
     console.error('error: or through another file specified with the -e flag');
     return false;
   }
+  return true;
+};
 
-  // ensure the correct aws credentials are defined
+const validateAwsCredentialsVariables = ({
+  BUCKET,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+}) => {
   if (
     !isDefined(BUCKET) ||
     !isDefined(AWS_ACCESS_KEY_ID) ||
@@ -93,7 +77,39 @@ const deploy = async (opts) => {
     console.error(
       'error: and contact your favourite Graasp engineer if you keep running into trouble',
     );
+    return false;
   }
+  return true;
+};
+
+const deploy = async (opts) => {
+  const { tag, env, build } = opts;
+
+  // validate command options
+  if (!validateTag(tag) || !validateEnv(env) || !validateBuild(build)) {
+    console.error('Abort...');
+    return false;
+  }
+
+  // set environment
+  dotenv.config({ path: env });
+
+  // validate environment variables
+  if (
+    !validateAppVariables(process.env) ||
+    !validateAwsCredentialsVariables(process.env)
+  ) {
+    return false;
+  }
+
+  const {
+    REACT_APP_GRAASP_DEVELOPER_ID,
+    REACT_APP_GRAASP_APP_ID,
+    REACT_APP_HOST,
+    REACT_APP_VERSION,
+    BUCKET,
+    DISTRIBUTION,
+  } = process.env;
 
   console.log(
     `info: publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
