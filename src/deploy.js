@@ -7,9 +7,9 @@ import { isDefined } from './utils';
 
 const validateTag = (tag) => {
   // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
+  // Furthermore, the escaption is needed so RegExp will interpret the String correctly.
   // prettier-ignore
   // eslint-disable-next-line no-useless-escape
-  // const pattern = new RegExp('v\\d+(\.\\d+){0,2}$');
   const pattern = new RegExp('^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z]*)?$')
   if (tag === 'latest' || pattern.test(tag)) {
     console.log(`info: validated tag ${tag}`);
