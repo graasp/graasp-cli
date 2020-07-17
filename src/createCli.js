@@ -5,7 +5,6 @@ import {
   DEFAULT_STARTER,
   DEFAULT_BUILD_DIR,
   DEFAULT_APP_VERSION,
-  DEFAULT_ENV,
 } from './config';
 
 const createCli = (argv) => {
@@ -69,7 +68,6 @@ const createCli = (argv) => {
           .option('e', {
             alias: 'env',
             type: 'string',
-            default: DEFAULT_ENV,
             describe: 'Environment used to load variables from',
           })
           .option('b', {
