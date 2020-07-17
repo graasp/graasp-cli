@@ -6,10 +6,6 @@ export const spawnProcess = (cmd, opts = { stdio: 'inherit' }) => {
   return execa(file, args, opts);
 };
 
-export const isDefined = (variable) => {
-  return typeof variable !== 'undefined';
-};
-
 export const promisify = (fn) => (...args) => {
   Promise.resolve(fn(...args)).then(
     () => process.exit(0),

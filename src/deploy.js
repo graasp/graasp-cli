@@ -3,7 +3,7 @@ import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import cliProgress from 'cli-progress';
-import { isDefined } from './utils';
+import _ from 'lodash';
 
 const validateTag = (tag) => {
   // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
@@ -43,9 +43,9 @@ const validateAppVariables = ({
   REACT_APP_GRAASP_APP_ID,
 }) => {
   if (
-    !isDefined(REACT_APP_HOST) ||
-    !isDefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
-    !isDefined(REACT_APP_GRAASP_APP_ID)
+    _.isUndefined(REACT_APP_HOST) ||
+    _.isUndefined(REACT_APP_GRAASP_DEVELOPER_ID) ||
+    _.isUndefined(REACT_APP_GRAASP_APP_ID)
   ) {
     console.error(
       'error: environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined',
@@ -65,9 +65,9 @@ const validateAwsCredentialsVariables = ({
   AWS_SECRET_ACCESS_KEY,
 }) => {
   if (
-    !isDefined(BUCKET) ||
-    !isDefined(AWS_ACCESS_KEY_ID) ||
-    !isDefined(AWS_SECRET_ACCESS_KEY)
+    _.isUndefined(BUCKET) ||
+    _.isUndefined(AWS_ACCESS_KEY_ID) ||
+    _.isUndefined(AWS_SECRET_ACCESS_KEY)
   ) {
     console.error(
       'error: environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined',
@@ -88,7 +88,7 @@ const deploy = async (opts) => {
 
   // validate command options
   if (!validateTag(tag) || !validateEnv(env) || !validateBuild(build)) {
-    console.error('Abort...');
+    console.error('aborting deployment...');
     return false;
   }
 
@@ -113,7 +113,7 @@ const deploy = async (opts) => {
   } = process.env;
 
   console.log(
-    `info: publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
+    `publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
   );
 
   // configure the deployment
@@ -163,7 +163,7 @@ const deploy = async (opts) => {
   );
 
   // ensure the correct distribution variables are defined
-  if (!isDefined(DISTRIBUTION)) {
+  if (_.isUndefined(DISTRIBUTION)) {
     console.error('error: environment variable DISTRIBUTION is not defined');
     console.error(
       'error: contact your favourite Graasp engineer if you keep running into trouble',
@@ -185,9 +185,13 @@ const deploy = async (opts) => {
   };
   const cloudfront = new aws.CloudFront();
   cloudfront.createInvalidation(invalidationParams, (err, data) => {
-    if (err) console.log(err, err.stack);
-    // an error occurred
-    else console.log(data); // successful response
+    if (err) {
+      // an error occurred
+      console.error(err, err.stack);
+    } else {
+      // successful response
+      console.log(data);
+    }
   });
 
   return true;
