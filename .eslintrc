@@ -12,7 +12,6 @@
         "allow": ["_id"]
       }
     ],
-    "no-console": "off",
     "import/no-named-as-default": "off"
   }
 }
