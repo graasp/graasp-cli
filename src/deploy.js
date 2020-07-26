@@ -49,12 +49,9 @@ const validateAppVariables = ({
     _.isUndefined(REACT_APP_GRAASP_APP_ID)
   ) {
     console.error(
-      'environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined',
+      `environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined \n
+      you can specify them through a .env file in the app root folder or through another file specified with the -e flag`,
     );
-    console.error(
-      'you can specify them through a .env file in the app root folder',
-    );
-    console.error('or through another file specified with the -e flag');
     return false;
   }
   return true;
@@ -71,13 +68,8 @@ const validateAwsCredentialsVariables = ({
     _.isUndefined(AWS_SECRET_ACCESS_KEY)
   ) {
     console.error(
-      'environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined',
-    );
-    console.error(
-      'make sure you setup your credentials file correctly using the scripts/setup.sh script',
-    );
-    console.error(
-      'and contact your favourite Graasp engineer if you keep running into trouble',
+      `environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined. \n
+      make sure you setup your credentials file correctly using the scripts/setup.sh script and contact your favourite Graasp engineer if you keep running into trouble`,
     );
     return false;
   }
