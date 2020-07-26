@@ -1,8 +1,8 @@
 import aws from 'aws-sdk';
-// import s3 from 's3-node-client';
+import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
-// import cliProgress from 'cli-progress';
+import cliProgress from 'cli-progress';
 import _ from 'lodash';
 import { promisify } from './utils';
 
@@ -104,10 +104,6 @@ const deploy = async (opts) => {
     return false;
   }
 
-  const { REACT_APP_GRAASP_APP_ID, REACT_APP_VERSION } = process.env;
-
-  /*
-
   const {
     REACT_APP_GRAASP_DEVELOPER_ID,
     REACT_APP_GRAASP_APP_ID,
@@ -116,8 +112,6 @@ const deploy = async (opts) => {
     BUCKET,
     DISTRIBUTION,
   } = process.env;
-
-*/
 
   console.log(
     `publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
@@ -143,7 +137,7 @@ const deploy = async (opts) => {
   console.log('After promise');
 
   return false;
-  /*
+
   // configure the deployment
   aws.config.getCredentials((err) => {
     if (err) {
@@ -223,7 +217,6 @@ const deploy = async (opts) => {
   });
 
   return true;
-  */
 };
 
 export default deploy;
