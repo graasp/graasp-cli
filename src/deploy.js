@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import cliProgress from 'cli-progress';
 import _ from 'lodash';
+// import { promisify } from './utils';
 
 const validateTag = (tag) => {
   // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
@@ -12,28 +13,28 @@ const validateTag = (tag) => {
   // eslint-disable-next-line no-useless-escape
   const pattern = new RegExp('^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z]*)?$')
   if (tag === 'latest' || pattern.test(tag)) {
-    console.log(`info: validated tag ${tag}`);
+    console.info(`validated tag ${tag}`);
     return true;
   }
-  console.error(`error: unable to validate version '${tag}'`);
+  console.error(`unable to validate version '${tag}'`);
   return false;
 };
 
 const validateEnv = (env) => {
   if (fs.existsSync(env)) {
-    console.log(`info: validated environment file ${env}`);
+    console.info(`validated environment file ${env}`);
     return true;
   }
-  console.log(`error: environment file '${env}' does not exist`);
+  console.error(`environment file '${env}' does not exist`);
   return false;
 };
 
 const validateBuild = (build) => {
   if (fs.existsSync(build)) {
-    console.log(`info: validated build directory ${build}`);
+    console.info(`validated build directory ${build}`);
     return true;
   }
-  console.log(`error: build directory '${build}' does not exist`);
+  console.error(`build directory '${build}' does not exist`);
   return false;
 };
 
@@ -48,12 +49,9 @@ const validateAppVariables = ({
     _.isUndefined(REACT_APP_GRAASP_APP_ID)
   ) {
     console.error(
-      'error: environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined',
+      `environment variables REACT_APP_GRAASP_APP_ID, REACT_APP_GRAASP_DEVELOPER_ID and/or REACT_APP_HOST are not defined \n
+      you can specify them through a .env file in the app root folder or through another file specified with the -e flag`,
     );
-    console.error(
-      'error: you can specify them through a .env file in the app root folder',
-    );
-    console.error('error: or through another file specified with the -e flag');
     return false;
   }
   return true;
@@ -70,17 +68,25 @@ const validateAwsCredentialsVariables = ({
     _.isUndefined(AWS_SECRET_ACCESS_KEY)
   ) {
     console.error(
-      'error: environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined',
-    );
-    console.error(
-      'error: make sure you setup your credentials file correctly using the scripts/setup.sh script',
-    );
-    console.error(
-      'error: and contact your favourite Graasp engineer if you keep running into trouble',
+      `environment variables BUCKET, AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY are not defined. \n
+      make sure you setup your credentials file correctly using the scripts/setup.sh script and contact your favourite Graasp engineer if you keep running into trouble`,
     );
     return false;
   }
   return true;
+};
+
+const loadAwsCredentials = async () => {
+  const awsCredentials = new aws.Credentials();
+  await awsCredentials.getPromise().then(
+    async () => true,
+    (err) => {
+      console.error(err.stack);
+      return false;
+    },
+  );
+  // set the AWS credentials into the global object
+  aws.config.credentials = awsCredentials;
 };
 
 const deploy = async (opts) => {
@@ -92,7 +98,7 @@ const deploy = async (opts) => {
     return false;
   }
 
-  // load environment
+  // load environment variables
   dotenv.config({ path: env });
 
   // validate environment variables
@@ -112,17 +118,11 @@ const deploy = async (opts) => {
     DISTRIBUTION,
   } = process.env;
 
-  console.log(
+  console.info(
     `publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
   );
 
-  // configure the deployment
-  aws.config.getCredentials((err) => {
-    if (err) {
-      // credentials not loaded
-      console.error(err.stack);
-    }
-  });
+  loadAwsCredentials();
 
   const APP_PATH = `${REACT_APP_GRAASP_DEVELOPER_ID}/${REACT_APP_GRAASP_APP_ID}/${REACT_APP_VERSION}`;
 
@@ -158,15 +158,15 @@ const deploy = async (opts) => {
     //       e.g. invalidate cache
   });
 
-  console.log(
-    `info: published app to https://${REACT_APP_HOST}/${APP_PATH}/index.html`,
+  console.info(
+    `published app to https://${REACT_APP_HOST}/${APP_PATH}/index.html`,
   );
 
   // ensure the correct distribution variables are defined
   if (_.isUndefined(DISTRIBUTION)) {
-    console.error('error: environment variable DISTRIBUTION is not defined');
+    console.error('environment variable DISTRIBUTION is not defined');
     console.error(
-      'error: contact your favourite Graasp engineer if you keep running into trouble',
+      'contact your favourite Graasp engineer if you keep running into trouble',
     );
     return false;
   }
@@ -190,7 +190,7 @@ const deploy = async (opts) => {
       console.error(err, err.stack);
     } else {
       // successful response
-      console.log(data);
+      console.info(data);
     }
   });
 

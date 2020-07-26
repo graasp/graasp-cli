@@ -68,13 +68,13 @@ const createCli = (argv) => {
           .option('e', {
             alias: 'env',
             type: 'string',
-            describe: 'Environment used to load variables from',
+            describe: 'Environment file used to load variables from',
           })
           .option('b', {
             alias: 'build',
             type: 'string',
             default: DEFAULT_BUILD_DIR,
-            describe: 'Path to the build directory that is deployed',
+            describe: 'Path to the build directory that will be deployed',
           }),
       handler: deploy,
     })
