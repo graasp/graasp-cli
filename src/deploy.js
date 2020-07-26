@@ -1,9 +1,10 @@
 import aws from 'aws-sdk';
-import s3 from 's3-node-client';
+// import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import cliProgress from 'cli-progress';
+// import cliProgress from 'cli-progress';
 import _ from 'lodash';
+import { promisify } from './utils';
 
 const validateTag = (tag) => {
   // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
@@ -103,6 +104,10 @@ const deploy = async (opts) => {
     return false;
   }
 
+  const { REACT_APP_GRAASP_APP_ID, REACT_APP_VERSION } = process.env;
+
+  /*
+
   const {
     REACT_APP_GRAASP_DEVELOPER_ID,
     REACT_APP_GRAASP_APP_ID,
@@ -112,10 +117,33 @@ const deploy = async (opts) => {
     DISTRIBUTION,
   } = process.env;
 
+*/
+
   console.log(
     `publishing app ${REACT_APP_GRAASP_APP_ID} version ${REACT_APP_VERSION}`,
   );
 
+  const getAwsCredentialsPromise = promisify(aws.config.getCredentials);
+  console.log('Before promise');
+  getAwsCredentialsPromise()
+    .then((err) => {
+      console.log('In then promises');
+      if (err) {
+        // credentials not loaded
+        console.error(err.stack);
+      }
+    })
+    .catch((err) => {
+      console.log('In catch promises');
+      if (err) {
+        // credentials not loaded
+        console.error(err.stack);
+      }
+    });
+  console.log('After promise');
+
+  return false;
+  /*
   // configure the deployment
   aws.config.getCredentials((err) => {
     if (err) {
@@ -195,6 +223,7 @@ const deploy = async (opts) => {
   });
 
   return true;
+  */
 };
 
 export default deploy;
