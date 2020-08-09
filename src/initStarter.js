@@ -8,7 +8,7 @@ import del from 'del';
 import { sync as existsSync } from 'fs-exists-cached';
 import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config';
 import writeEnvFiles from './writeEnvFiles';
-import { spawn } from './utils';
+import { spawnProcess } from './utils';
 
 const readFile = util.promisify(fs.readFile);
 
@@ -35,7 +35,9 @@ const install = async (rootPath) => {
   process.chdir(rootPath);
 
   try {
-    const cmd = shouldUseYarn() ? spawn('yarnpkg') : spawn('npm install');
+    const cmd = shouldUseYarn()
+      ? spawnProcess('yarnpkg')
+      : spawnProcess('npm install');
     await cmd;
   } finally {
     process.chdir(prevDir);
@@ -87,7 +89,7 @@ const commit = async (rootPath) => {
   process.chdir(rootPath);
 
   try {
-    await spawn('git add -A', { stdio: 'ignore' });
+    await spawnProcess('git add -A', { stdio: 'ignore' });
 
     // cannot spawn this because of the way we are splitting the command
     execSync('git commit -m "chore: initial commit from graasp cli"', {
@@ -130,7 +132,7 @@ const clone = async (hostInfo, rootPath) => {
 
   console.log(`creating new site from git: ${url}`);
 
-  await spawn(`git clone ${branch} ${url} ${rootPath} --single-branch`);
+  await spawnProcess(`git clone ${branch} ${url} ${rootPath} --single-branch`);
 
   console.log('created starter directory layout');
 
