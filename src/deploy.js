@@ -1,10 +1,14 @@
 import aws from 'aws-sdk';
-import s3 from 's3-node-client';
+// import s3 from 's3-node-client';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import cliProgress from 'cli-progress';
 import _ from 'lodash';
 // import { promisify } from './utils';
+
+const path = require('path');
+const async = require('async');
+const readdir = require('recursive-readdir');
 
 const validateTag = (tag) => {
   // Both compilation hints because of backslashes used in RegExp but unecessary by conception in JS Strings
@@ -89,6 +93,51 @@ const loadAwsCredentials = async () => {
   aws.config.credentials = awsCredentials;
 };
 
+function getFiles(dirPath) {
+  return fs.existsSync(dirPath) ? readdir(dirPath) : [];
+}
+
+async function uploadToS3(s3, uploadPath, bucket) {
+  const rootFolder = process.cwd();
+  const filesToUpload = await getFiles(path.resolve(rootFolder, uploadPath));
+
+  console.log(filesToUpload);
+
+  return new Promise((resolve, reject) => {
+    async.eachOfLimit(
+      filesToUpload,
+      10,
+      async.asyncify(async (file) => {
+        const Key = file.replace(`${rootFolder}/`, '');
+        console.log(`uploading: [${Key}]`);
+        return new Promise((res, rej) => {
+          s3.upload(
+            {
+              Key,
+              Bucket: bucket,
+              Body: fs.readFileSync(file),
+            },
+            // eslint-disable-next-line
+            (err) => {
+              if (err) {
+                return rej(new Error(err));
+              }
+              res({ result: true });
+            },
+          );
+        });
+      }),
+      // eslint-disable-next-line
+      (err) => {
+        if (err) {
+          return reject(new Error(err));
+        }
+        resolve({ result: true });
+      },
+    );
+  });
+}
+
 const deploy = async (opts) => {
   const { tag, env, build } = opts;
 
@@ -124,8 +173,34 @@ const deploy = async (opts) => {
 
   loadAwsCredentials();
 
+  // eslint-disable-next-line
   const APP_PATH = `${REACT_APP_GRAASP_DEVELOPER_ID}/${REACT_APP_GRAASP_APP_ID}/${REACT_APP_VERSION}`;
 
+  const uploadFolder = './build';
+
+  // The name of the bucket that you have created
+
+  const s3 = new aws.S3();
+
+  await uploadToS3(s3, uploadFolder, BUCKET)
+    .then(() => {
+      console.log('upload complete!');
+    })
+    .catch((err) => {
+      console.error(err.message);
+      process.exit(1);
+    });
+
+  // ensure the correct distribution variables are defined
+  if (_.isUndefined(DISTRIBUTION)) {
+    console.error('environment variable DISTRIBUTION is not defined');
+    console.error(
+      'contact your favourite Graasp engineer if you keep running into trouble',
+    );
+    return false;
+  }
+
+  /*
   const client = s3.createClient({ s3Client: new aws.S3() });
 
   const params = {
@@ -157,7 +232,7 @@ const deploy = async (opts) => {
     // TODO: insert here code that should be executed once the upload is done
     //       e.g. invalidate cache
   });
-
+*/
   console.info(
     `published app to https://${REACT_APP_HOST}/${APP_PATH}/index.html`,
   );
