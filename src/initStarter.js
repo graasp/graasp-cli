@@ -105,7 +105,7 @@ const commit = async (rootPath) => {
       console.log('could not initialize the git repository');
       console.log('is your commit author config set?');
       console.log(
-        'might you be running this command inside a package with babel-eslint?',
+        'might you be running this command inside a package with babel-eslint?'
       );
       await fs.remove('.git');
     } catch (removeErr) {
@@ -170,13 +170,13 @@ const initStarter = async (options = {}) => {
   // enforce naming convention
   const projectDirectory = path.join(
     p,
-    `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase(),
+    `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase()
   );
 
   // check for existing project in project directory
   if (existsSync(path.join(projectDirectory, 'package.json'))) {
     console.error(
-      `destination path '${projectDirectory}' is already an npm project`,
+      `destination path '${projectDirectory}' is already an npm project`
     );
     return false;
   }
@@ -184,7 +184,7 @@ const initStarter = async (options = {}) => {
   // check for existing git repo in project directory
   if (existsSync(path.join(projectDirectory, '.git'))) {
     console.error(
-      `destination path '${projectDirectory}' is already a git repository`,
+      `destination path '${projectDirectory}' is already a git repository`
     );
     return false;
   }

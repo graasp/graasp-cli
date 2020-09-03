@@ -1,11 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import {
-  DEV,
-  LOCAL,
-  PROD,
-  TEST,
-} from './config';
+import { DEV, LOCAL, PROD, TEST } from './config';
 
 const writeRemoteEnvFile = async (
   env,
@@ -15,7 +10,7 @@ const writeRemoteEnvFile = async (
     graaspAppId = '',
     awsAccessKeyId = '',
     awsSecretAccessKey = '',
-  } = {},
+  } = {}
 ) => {
   const host = env === PROD ? 'apps.graasp.eu' : 'apps.dev.graasp.eu';
   const bucket = `graasp-apps-${env}`;
@@ -62,7 +57,6 @@ const writeTestEnvFile = async (env, rootPath) => {
   }
 };
 
-
 const writeEnvFile = async (env, rootPath, opts) => {
   switch (env) {
     case TEST:
@@ -77,10 +71,11 @@ const writeEnvFile = async (env, rootPath, opts) => {
   }
 };
 
-
 const writeEnvFiles = async (rootPath, opts) => {
   console.log('writing environment files...');
-  await Promise.all([LOCAL, DEV, PROD, TEST].map((env) => writeEnvFile(env, rootPath, opts)));
+  await Promise.all(
+    [LOCAL, DEV, PROD, TEST].map((env) => writeEnvFile(env, rootPath, opts))
+  );
   console.log('wrote environment files');
 };
 
