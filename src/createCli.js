@@ -65,8 +65,8 @@ const createCli = (argv) => {
       })
       // package an app built files into a zip file
       .command({
-        command: 'publish',
-        desc: 'Publish a zipped app',
+        command: 'package',
+        desc: 'Package the build folder of an app into a zip file.',
         handler: promisify(createPackageFile),
       })
       .wrap(cli.terminalWidth())

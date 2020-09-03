@@ -1,13 +1,11 @@
 import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
-import { DEFAULT_PATH, BUILD_DIRECTORY } from './config';
-
-const BUILD_PACKAGE_NAME = 'package.zip';
+import { DEFAULT_PATH, BUILD_DIRECTORY, BUILD_PACKAGE_NAME } from './config';
 
 const createPackageFile = () => {
   try {
-    const buildDirPath = `${DEFAULT_PATH}/${BUILD_DIRECTORY}`;
+    const buildDirPath = path.resolve(DEFAULT_PATH, BUILD_DIRECTORY);
     const zipPath = path.join(buildDirPath, BUILD_PACKAGE_NAME);
 
     // remove previous zip file
@@ -22,11 +20,11 @@ const createPackageFile = () => {
     });
     archive.on('warning', (err) => {
       if (err.code === 'ENOENT') {
-        console.error(err);
+        console.warning(err);
       }
     });
     archive.on('error', (err) => {
-      console.error(err);
+      throw err;
     });
     archive.pipe(output);
     archive.directory(buildDirPath, false);

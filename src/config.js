@@ -3,6 +3,8 @@ export const DEFAULT_FRAMEWORK = 'react';
 export const DEFAULT_PATH = './';
 export const BUILD_DIRECTORY = 'build';
 
+export const BUILD_PACKAGE_NAME = 'package.zip';
+
 // environments
 export const TEST = 'test';
 export const LOCAL = 'local';
