@@ -3,18 +3,26 @@ import path from 'path';
 import fs from 'fs';
 import { DEFAULT_PATH, BUILD_DIRECTORY, BUILD_PACKAGE_NAME } from './config';
 
+const removeFileIfExists = (filepath) => {
+  try {
+    fs.statSync(filepath);
+    fs.unlinkSync(filepath);
+  } catch (e) {
+    // do nothing
+    // the file does not exist
+  }
+};
+
 const createPackageFile = () => {
   try {
     const buildDirPath = path.resolve(DEFAULT_PATH, BUILD_DIRECTORY);
     const zipPath = path.join(buildDirPath, BUILD_PACKAGE_NAME);
 
-    // remove previous zip file
-    if (fs.existsSync(path)) {
-      fs.unlinkSync(zipPath);
-    }
+    removeFileIfExists(zipPath);
 
     // archive build folder into zip
     const output = fs.createWriteStream(zipPath);
+    // const output = 'wef';
     const archive = archiver('zip', {
       zlib: { level: 9 },
     });
@@ -24,6 +32,9 @@ const createPackageFile = () => {
       }
     });
     archive.on('error', (err) => {
+      console.log('error');
+      // remove resulting file
+      removeFileIfExists(zipPath);
       throw err;
     });
     archive.pipe(output);
