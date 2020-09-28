@@ -22,7 +22,6 @@ const createPackageFile = () => {
 
     // archive build folder into zip
     const output = fs.createWriteStream(zipPath);
-    // const output = 'wef';
     const archive = archiver('zip', {
       zlib: { level: 9 },
     });
