@@ -41,3 +41,8 @@ cypress
 
 # exclude directories used to test command outputs
 /output
+
+# exclude yarn directories
+.yarn/
+!.yarn/release
+!.yarn/plugin
