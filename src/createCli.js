@@ -1,7 +1,7 @@
 import yargs from 'yargs';
-import prompt from './prompt';
-import { DEFAULT_STARTER } from './config';
-import createPackageFile from './createPackageFile';
+import prompt from './prompt.js';
+import { DEFAULT_STARTER } from './config.js';
+import createPackageFile from './createPackageFile.js';
 
 const promisify = (fn) => (...args) => {
   Promise.resolve(fn(...args)).then(

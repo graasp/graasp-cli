@@ -4,12 +4,13 @@ import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import util from 'util';
 import HostedGitInfo from 'hosted-git-info';
-import del from 'del';
-import { sync as existsSync } from 'fs-exists-cached';
-import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config';
-import writeEnvFiles from './writeEnvFiles';
-import { spawn } from './utils';
+import { deleteSync } from 'del';
+import fsExistsCached from 'fs-exists-cached';
+import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config.js';
+import writeEnvFiles from './writeEnvFiles.js';
+import { spawn } from './utils.js';
 
+const { sync: existsSync } = fsExistsCached;
 const readFile = util.promisify(fs.readFile);
 
 /**
@@ -35,8 +36,13 @@ const install = async (rootPath) => {
   process.chdir(rootPath);
 
   try {
-    const cmd = shouldUseYarn() ? spawn('yarnpkg') : spawn('npm install');
-    await cmd;
+    if (shouldUseYarn()) {
+      console.log('switching to yarn v2...');
+      await spawn('yarn set version berry');
+      await spawn('yarn');
+    } else {
+      await spawn('npm install');
+    }
   } finally {
     process.chdir(prevDir);
   }
@@ -57,7 +63,7 @@ const removeIgnoredFiles = async (rootPath) => {
     const files = lines.filter((line) => line !== '');
 
     // delete matching files, including hidden ones
-    del.sync(files, { dot: true });
+    deleteSync(files, { dot: true });
   } catch (e) {
     console.error(e);
   } finally {
@@ -65,7 +71,7 @@ const removeIgnoredFiles = async (rootPath) => {
   }
 };
 
-// creates an new git repository
+// creates a new git repository
 const initGit = async (rootPath) => {
   const prevDir = process.cwd();
 
@@ -83,12 +89,12 @@ const initGit = async (rootPath) => {
 const commit = async (rootPath) => {
   const prevDir = process.cwd();
 
-  console.log('performing initial commit...');
+  await console.log('performing initial commit (running lint and tests)...');
   process.chdir(rootPath);
 
   try {
     await spawn('git add -A', { stdio: 'ignore' });
-
+    await console.log('this may take some time');
     // cannot spawn this because of the way we are splitting the command
     execSync('git commit -m "chore: initial commit from graasp cli"', {
       stdio: 'ignore',
@@ -146,6 +152,16 @@ const writeReadme = async (rootPath, name, type) => {
   }
 };
 
+const checkDeploymentMethod = async (rootPath, useGithubActions) => {
+  if (!useGithubActions) {
+    try {
+      await fs.remove(path.join(rootPath, '.github'));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
+
 const writeChangeLog = async (rootPath) => {
   const string = '# Change Log';
   try {
@@ -160,10 +176,9 @@ const initStarter = async (options = {}) => {
     starter = DEFAULT_STARTER,
     name,
     type,
-    graaspDeveloperId,
+    githubActions,
     graaspAppId,
-    awsAccessKeyId,
-    awsSecretAccessKey,
+    mockApi,
     p = DEFAULT_PATH,
   } = options;
 
@@ -206,11 +221,12 @@ const initStarter = async (options = {}) => {
 
   // write environment files
   await writeEnvFiles(projectDirectory, {
-    graaspDeveloperId,
     graaspAppId,
-    awsAccessKeyId,
-    awsSecretAccessKey,
+    mockApi,
   });
+
+  // deployment method (removes .github directory when not using GitHub Actions)
+  await checkDeploymentMethod(projectDirectory, githubActions);
 
   // write readme
   await writeReadme(projectDirectory, name, type);

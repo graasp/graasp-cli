@@ -1,46 +1,30 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { DEV, LOCAL, PROD, TEST } from './config';
+import { DEV, LOCAL, TEST } from './config.js';
 
-const writeRemoteEnvFile = async (
-  env,
-  rootPath,
-  {
-    graaspDeveloperId = '',
-    graaspAppId = '',
-    awsAccessKeyId = '',
-    awsSecretAccessKey = '',
-  } = {}
-) => {
-  const host = env === PROD ? 'apps.graasp.eu' : 'apps.dev.graasp.eu';
-  const bucket = `graasp-apps-${env}`;
-  const string = `REACT_APP_GRAASP_DEVELOPER_ID=${graaspDeveloperId}
-    REACT_APP_GRAASP_APP_ID=${graaspAppId}
-    REACT_APP_GRAASP_DOMAIN=graasp.eu
-    REACT_APP_HOST=${host}
-    REACT_APP_VERSION=latest
-    REACT_APP_BASE=//$REACT_APP_HOST/$REACT_APP_GRAASP_DEVELOPER_ID/$REACT_APP_GRAASP_APP_ID/$REACT_APP_VERSION/
-    NODE_ENV=production
-    BUCKET=${bucket}
-    AWS_DEFAULT_REGION=us-east-1
-    AWS_ACCESS_KEY_ID=${awsAccessKeyId}
-    AWS_SECRET_ACCESS_KEY=${awsSecretAccessKey}
-  `;
+const writeDevEnvFile = async (rootPath, { graaspAppId = '' } = {}) => {
+  const string = `# this app is used when you develop the app
+# it uses the mock API which enables a lighter and faster development workflow
+REACT_APP_GRAASP_APP_ID=${graaspAppId}
+REACT_APP_MOCK_API=true
+REACT_APP_GRAASP_DOMAIN=localhost
+REACT_APP_API_HOST=http://localhost:3636`;
   try {
-    await fs.writeFile(path.join(rootPath, `.env.${env}`), string, 'utf8');
+    await fs.writeFile(path.join(rootPath, '.env.development'), string, 'utf8');
   } catch (e) {
     console.error(e);
   }
 };
 
-const writeLocalEnvFile = async (env, rootPath) => {
-  const string = `REACT_APP_GRAASP_DEVELOPER_ID=
-    REACT_APP_GRAASP_APP_ID=
-    REACT_APP_GRAASP_DOMAIN=localhost
-    REACT_APP_HOST=
-    REACT_APP_VERSION=
-    REACT_APP_BASE=
-  `;
+const writeLocalEnvFile = async (rootPath, { graaspAppId }) => {
+  const string = `# this file is used when you want to run the app against
+# the local Docker backend and the Graasp frontend
+PORT=3005
+REACT_APP_GRAASP_APP_ID=${graaspAppId}
+REACT_APP_GRAASP_DOMAIN=localhost
+REACT_APP_API_HOST=http://localhost:3000
+REACT_APP_MOCK_API=false
+NODE_ENV=production`;
   try {
     await fs.writeFile(path.join(rootPath, '.env.local'), string, 'utf8');
   } catch (e) {
@@ -48,8 +32,17 @@ const writeLocalEnvFile = async (env, rootPath) => {
   }
 };
 
-const writeTestEnvFile = async (env, rootPath) => {
-  const string = '';
+const writeTestEnvFile = async (
+  rootPath,
+  { graaspAppId = '', mockApi = true } = {}
+) => {
+  const string = `# this file is used when you want to test your app with Cypress
+PORT=3333
+CYPRESS_BASE_URL=http://localhost:3333
+REACT_APP_GRAASP_APP_ID=${graaspAppId}
+REACT_APP_GRAASP_DOMAIN=localhost
+REACT_APP_API_HOST=http://localhost:3636
+REACT_APP_MOCK_API=${mockApi}`;
   try {
     await fs.writeFile(path.join(rootPath, '.env.test'), string, 'utf8');
   } catch (e) {
@@ -60,12 +53,11 @@ const writeTestEnvFile = async (env, rootPath) => {
 const writeEnvFile = async (env, rootPath, opts) => {
   switch (env) {
     case TEST:
-      return writeTestEnvFile(env, rootPath);
+      return writeTestEnvFile(rootPath, opts);
     case LOCAL:
-      return writeLocalEnvFile(env, rootPath);
+      return writeLocalEnvFile(rootPath, opts);
     case DEV:
-    case PROD:
-      return writeRemoteEnvFile(env, rootPath, opts);
+      return writeDevEnvFile(rootPath, opts);
     default:
       return false;
   }
@@ -74,7 +66,7 @@ const writeEnvFile = async (env, rootPath, opts) => {
 const writeEnvFiles = async (rootPath, opts) => {
   console.log('writing environment files...');
   await Promise.all(
-    [LOCAL, DEV, PROD, TEST].map((env) => writeEnvFile(env, rootPath, opts))
+    [LOCAL, DEV, TEST].map((env) => writeEnvFile(env, rootPath, opts))
   );
   console.log('wrote environment files');
 };

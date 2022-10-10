@@ -1,7 +1,7 @@
 import archiver from 'archiver';
 import path from 'path';
 import fs from 'fs';
-import { DEFAULT_PATH, BUILD_DIRECTORY, BUILD_PACKAGE_NAME } from './config';
+import { DEFAULT_PATH, BUILD_DIRECTORY, BUILD_PACKAGE_NAME } from './config.js';
 
 const removeFileIfExists = (filepath) => {
   try {

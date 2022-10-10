@@ -1,20 +1,16 @@
 {
-  "extends": [
-    "airbnb-base", 
-    "prettier"
-  ],
+  "extends": ["airbnb-base", "prettier"],
   "env": {
     "node": true,
     "mocha": true
   },
-  "parser": "babel-eslint",
   "rules": {
+    "no-console": 0,
+    "import/extensions": ["error", { "js": "always" }],
     "no-underscore-dangle": [
       "error",
       {
-        "allow": [
-          "_id"
-        ]
+        "allow": ["_id"]
       }
     ],
     "import/no-named-as-default": 0
