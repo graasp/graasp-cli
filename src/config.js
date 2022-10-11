@@ -13,3 +13,6 @@ export const DEV = 'development';
 
 // file names
 export const GRAASP_IGNORE_FILE = '.graaspignore';
+
+// replacement strings
+export const TEMPLATE_FULL_NAME = '#TEMPLATE_FULL_NAME#';

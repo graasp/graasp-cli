@@ -3,14 +3,22 @@ import path from 'path';
 import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import util from 'util';
+import replaceInFilePkg from 'replace-in-file';
+import { replace as replaceJSON } from 'replace-json-property';
 import HostedGitInfo from 'hosted-git-info';
 import { deleteSync } from 'del';
 import fsExistsCached from 'fs-exists-cached';
-import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config.js';
+import {
+  DEFAULT_PATH,
+  DEFAULT_STARTER,
+  GRAASP_IGNORE_FILE,
+  TEMPLATE_FULL_NAME,
+} from './config.js';
 import writeEnvFiles from './writeEnvFiles.js';
 import { spawn } from './utils.js';
 
 const { sync: existsSync } = fsExistsCached;
+const { replaceInFile } = replaceInFilePkg;
 const readFile = util.promisify(fs.readFile);
 
 /**
@@ -152,6 +160,31 @@ const writeReadme = async (rootPath, name, type) => {
   }
 };
 
+const replaceProjectName = async (rootPath, fullName, projectName) => {
+  const prevDir = process.cwd();
+  console.log('branding project...');
+  process.chdir(rootPath);
+  try {
+    const files = execSync(`grep -RiIl '${TEMPLATE_FULL_NAME}'`, {
+      encoding: 'utf-8',
+    });
+    const filesList = files.split('\n').filter((f) => f);
+    const options = {
+      files: filesList,
+      from: new RegExp(TEMPLATE_FULL_NAME, 'g'),
+      to: fullName,
+    };
+    await replaceInFile(options);
+
+    // replace name in package.json
+    replaceJSON('./package.json', 'name', projectName, { silent: true });
+  } catch (e) {
+    console.error(e);
+  } finally {
+    process.chdir(prevDir);
+  }
+};
+
 const checkDeploymentMethod = async (rootPath, useGithubActions) => {
   if (!useGithubActions) {
     try {
@@ -183,10 +216,10 @@ const initStarter = async (options = {}) => {
   } = options;
 
   // enforce naming convention
-  const projectDirectory = path.join(
-    p,
-    `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase()
-  );
+  const projectName = `graasp-${type}-${name
+    .split(' ')
+    .join('-')}`.toLowerCase();
+  const projectDirectory = path.join(p, projectName);
 
   // check for existing project in project directory
   if (existsSync(path.join(projectDirectory, 'package.json'))) {
@@ -212,6 +245,8 @@ const initStarter = async (options = {}) => {
   if (existsSync(path.join(projectDirectory, GRAASP_IGNORE_FILE))) {
     await removeIgnoredFiles(projectDirectory);
   }
+
+  await replaceProjectName(projectDirectory, name, projectName);
 
   await initGit(projectDirectory);
 
