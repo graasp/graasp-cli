@@ -5,19 +5,22 @@
   "description": "A CLI to create apps and labs for the Graasp ecosystem.",
   "exports": "./src/index.js",
   "type": "module",
+  "contributors": [
+    "Basile Spaenlehauer"
+  ],
   "files": [
     "lib"
   ],
   "scripts": {
     "test": "echo \"warning: no test specified\" && exit 0",
-    "compile": "babel src --out-dir lib ",
+    "compile": "babel src --out-dir lib",
     "hooks:uninstall": "node node_modules/husky/husky.js uninstall",
     "hooks:install": "node node_modules/husky/husky.js install",
     "prettier:check": "prettier --check 'src/**/*.js'",
     "prettier:write": "prettier --write 'src/**/*.js'",
     "lint": "eslint .",
     "release": "standard-version",
-    "prepublishOnly": "yarn lint && yarn test",
+    "prepublishOnly": "run-s lint test",
     "prepare": "npm run compile"
   },
   "repository": {

@@ -12,7 +12,8 @@ import {
   DEFAULT_PATH,
   DEFAULT_STARTER,
   GRAASP_IGNORE_FILE,
-  TEMPLATE_FULL_NAME,
+  HTML_TEMPLATE,
+  YAML_TEMPLATE,
 } from './config.js';
 import writeEnvFiles from './writeEnvFiles.js';
 import { spawn } from './utils.js';
@@ -97,12 +98,12 @@ const initGit = async (rootPath) => {
 const commit = async (rootPath) => {
   const prevDir = process.cwd();
 
-  await console.log('performing initial commit (running lint and tests)...');
+  console.log('performing initial commit (running linter and tests)...');
   process.chdir(rootPath);
 
   try {
     await spawn('git add -A', { stdio: 'ignore' });
-    await console.log('this may take some time');
+    console.log('this may take some time');
     // cannot spawn this because of the way we are splitting the command
     execSync('git commit -m "chore: initial commit from graasp cli"', {
       stdio: 'ignore',
@@ -160,24 +161,56 @@ const writeReadme = async (rootPath, name, type) => {
   }
 };
 
+const replaceInFilesByType = async (patterns, template, newValue) => {
+  const options = {
+    files: patterns,
+    from: new RegExp(template, 'g'),
+    to: newValue,
+  };
+  try {
+    const res = await replaceInFile(options);
+    return res.filter((f) => f.hasChanged);
+  } catch (e) {
+    return [];
+  }
+};
+
 const replaceProjectName = async (rootPath, fullName, projectName) => {
   const prevDir = process.cwd();
   console.log('branding project...');
   process.chdir(rootPath);
   try {
-    const files = execSync(`grep -RiIl '${TEMPLATE_FULL_NAME}'`, {
-      encoding: 'utf-8',
-    });
-    const filesList = files.split('\n').filter((f) => f);
-    const options = {
-      files: filesList,
-      from: new RegExp(TEMPLATE_FULL_NAME, 'g'),
-      to: fullName,
-    };
-    await replaceInFile(options);
+    // replace in yaml
+    const yamlFiles = await Promise.all(
+      ['.github/workflows/*.yaml', '.github/workflows/*.yml'].map(
+        async (pattern) =>
+          replaceInFilesByType(pattern, YAML_TEMPLATE, fullName)
+      )
+    );
+    console.log(
+      'Yaml files:',
+      yamlFiles.flat().map((f) => f.file)
+    );
+
+    // replace in html
+    const htmlFiles = await replaceInFilesByType(
+      'public/*.html',
+      HTML_TEMPLATE,
+      fullName
+    );
+    console.log(
+      'HTML files:',
+      htmlFiles.map((f) => f.file)
+    );
 
     // replace name in package.json
     replaceJSON('./package.json', 'name', projectName, { silent: true });
+    replaceJSON('./public/manifest.json', 'name', projectName, {
+      silent: true,
+    });
+    replaceJSON('./public/manifest.json', 'short_name', projectName, {
+      silent: true,
+    });
   } catch (e) {
     console.error(e);
   } finally {
@@ -211,7 +244,6 @@ const initStarter = async (options = {}) => {
     type,
     githubActions,
     graaspAppId,
-    mockApi,
     p = DEFAULT_PATH,
   } = options;
 
@@ -241,6 +273,11 @@ const initStarter = async (options = {}) => {
   const hostedInfo = HostedGitInfo.fromUrl(starter);
   await clone(hostedInfo, projectDirectory);
 
+  // write environment files
+  await writeEnvFiles(projectDirectory, {
+    graaspAppId,
+  });
+
   // only remove ignored files if graaspignore file detected
   if (existsSync(path.join(projectDirectory, GRAASP_IGNORE_FILE))) {
     await removeIgnoredFiles(projectDirectory);
@@ -253,12 +290,6 @@ const initStarter = async (options = {}) => {
   console.log('initialized git repository');
 
   await install(projectDirectory);
-
-  // write environment files
-  await writeEnvFiles(projectDirectory, {
-    graaspAppId,
-    mockApi,
-  });
 
   // deployment method (removes .github directory when not using GitHub Actions)
   await checkDeploymentMethod(projectDirectory, githubActions);

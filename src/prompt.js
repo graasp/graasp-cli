@@ -22,15 +22,12 @@ const prompt = async (opts) => {
     },
     {
       type: 'list',
-      message: 'Type',
       name: 'type',
+      message: 'Type',
       choices: [
         {
           name: 'App',
           checked: true,
-        },
-        {
-          name: 'Lab',
         },
       ],
       filter: (val) => val.toLowerCase(),
@@ -38,8 +35,8 @@ const prompt = async (opts) => {
     },
     {
       type: 'list',
-      message: 'Framework',
       name: 'framework',
+      message: 'Framework',
       choices: [
         {
           name: 'React',
@@ -50,8 +47,8 @@ const prompt = async (opts) => {
     },
     {
       type: 'list',
-      message: 'Language',
       name: 'lang',
+      message: 'Programming Language',
       choices: [
         {
           name: 'TypeScript',
@@ -60,12 +57,6 @@ const prompt = async (opts) => {
         // todo: add another template for JS
       ],
       filter: (val) => val.toLowerCase(),
-    },
-    {
-      type: 'confirm',
-      name: 'mockApi',
-      message: 'Use mocked API',
-      default: true,
     },
     {
       type: 'confirm',

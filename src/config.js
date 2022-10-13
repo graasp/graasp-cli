@@ -3,6 +3,7 @@ export const DEFAULT_STARTER = 'graasp/graasp-app-starter-ts#1/initRepo';
 export const DEFAULT_FRAMEWORK = 'react';
 export const DEFAULT_PATH = './';
 export const BUILD_DIRECTORY = 'build';
+export const ENV_TEMPLATE_FOLDER = '.env_templates';
 
 export const BUILD_PACKAGE_NAME = 'package.zip';
 
@@ -15,4 +16,7 @@ export const DEV = 'development';
 export const GRAASP_IGNORE_FILE = '.graaspignore';
 
 // replacement strings
-export const TEMPLATE_FULL_NAME = '#TEMPLATE_FULL_NAME#';
+// eslint-disable-next-line no-template-curly-in-string, no-useless-escape
+export const YAML_TEMPLATE = 'GRAASP_TEMPLATE_FULL_NAME';
+export const HTML_TEMPLATE = '%GRAASP_TEMPLATE_FULL_NAME%';
+export const TEMPLATE_APP_ID = '{{APP_ID}}';
