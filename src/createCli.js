@@ -1,16 +1,22 @@
 import yargs from 'yargs';
 import prompt from './prompt.js';
-import { DEFAULT_STARTER } from './config.js';
+import {
+  DEFAULT_STARTER,
+  FRAMEWORK_CHOICES,
+  STARTER_TYPE_CHOICES,
+} from './config.js';
 import createPackageFile from './createPackageFile.js';
 
-const promisify = (fn) => (...args) => {
-  Promise.resolve(fn(...args)).then(
-    () => {
-      process.exit(0);
-    }
-    // err => report.panic(err)
-  );
-};
+const promisify =
+  (fn) =>
+  (...args) => {
+    Promise.resolve(fn(...args)).then(
+      () => {
+        process.exit(0);
+      }
+      // err => report.panic(err)
+    );
+  };
 
 const createCli = (argv) => {
   const cli = yargs();
@@ -42,18 +48,17 @@ const createCli = (argv) => {
           _.option('s', {
             alias: 'starter',
             type: 'string',
-            default: DEFAULT_STARTER,
             describe: `Set starter. Defaults to ${DEFAULT_STARTER}`,
           })
             .option('f', {
               alias: 'framework',
-              type: 'string',
-              describe: 'Set development framework (e.g. React, Angular)',
+              choices: Object.keys(FRAMEWORK_CHOICES),
+              describe: 'Set development framework (e.g. React, ...)',
             })
             .option('t', {
               alias: 'type',
-              choices: ['app', 'lab'],
-              describe: 'Type of application (app or lab)',
+              choices: Object.keys(STARTER_TYPE_CHOICES),
+              describe: 'Type of application (app)',
             })
             .option('p', {
               alias: 'path',
@@ -66,7 +71,7 @@ const createCli = (argv) => {
       // package an app built files into a zip file
       .command({
         command: 'package',
-        desc: 'Package the build folder of an app into a zip file.',
+        describe: 'Package the build folder of an app into a zip file.',
         handler: promisify(createPackageFile),
       })
       .wrap(cli.terminalWidth())

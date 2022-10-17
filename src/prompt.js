@@ -1,5 +1,14 @@
 import inquirer from 'inquirer';
 import { validate as UUIDValidate, v4 } from 'uuid';
+import {
+  STARTER_TYPE_CHOICES,
+  STARTER_TYPE_APP,
+  FRAMEWORK_CHOICES,
+  FRAMEWORK_REACT,
+  LANGUAGE_CHOICES,
+  LANGUAGE_TYPESCRIPT,
+  LANGUAGE_JAVASCRIPT,
+} from './config.js';
 import initStarter from './initStarter.js';
 
 const validateGraaspAppId = (value) => {
@@ -11,7 +20,7 @@ const validateGraaspAppId = (value) => {
 };
 
 const prompt = async (opts) => {
-  const { type } = opts;
+  const { type, starter, framework } = opts;
 
   const answers = await inquirer.prompt([
     {
@@ -26,7 +35,8 @@ const prompt = async (opts) => {
       message: 'Type',
       choices: [
         {
-          name: 'App',
+          name: STARTER_TYPE_CHOICES[STARTER_TYPE_APP],
+          value: STARTER_TYPE_APP,
           checked: true,
         },
       ],
@@ -39,11 +49,12 @@ const prompt = async (opts) => {
       message: 'Framework',
       choices: [
         {
-          name: 'React',
+          name: FRAMEWORK_CHOICES[FRAMEWORK_REACT],
           checked: true,
         },
       ],
       filter: (val) => val.toLowerCase(),
+      when: () => Boolean(!starter) || Boolean(!framework),
     },
     {
       type: 'list',
@@ -51,12 +62,18 @@ const prompt = async (opts) => {
       message: 'Programming Language',
       choices: [
         {
-          name: 'TypeScript',
+          name: LANGUAGE_CHOICES[LANGUAGE_TYPESCRIPT],
           checked: true,
+          value: LANGUAGE_TYPESCRIPT,
         },
         // todo: add another template for JS
+        {
+          name: LANGUAGE_CHOICES[LANGUAGE_JAVASCRIPT],
+          value: LANGUAGE_JAVASCRIPT,
+        },
       ],
       filter: (val) => val.toLowerCase(),
+      when: () => Boolean(!starter),
     },
     {
       type: 'confirm',

@@ -8,11 +8,13 @@ import { replace as replaceJSON } from 'replace-json-property';
 import HostedGitInfo from 'hosted-git-info';
 import { deleteSync } from 'del';
 import fsExistsCached from 'fs-exists-cached';
+import inquirer from 'inquirer';
 import {
   DEFAULT_PATH,
   DEFAULT_STARTER,
   GRAASP_IGNORE_FILE,
   HTML_TEMPLATE,
+  STARTERS,
   YAML_TEMPLATE,
 } from './config.js';
 import writeEnvFiles from './writeEnvFiles.js';
@@ -21,6 +23,37 @@ import { spawn } from './utils.js';
 const { sync: existsSync } = fsExistsCached;
 const { replaceInFile } = replaceInFilePkg;
 const readFile = util.promisify(fs.readFile);
+
+// chooses the starter to use based on type, framework and language
+const getStarter = async (type, framework, lang) => {
+  const typeChoices = STARTERS[type];
+  if (!typeChoices) {
+    console.error(`there is no starter corresponding to your type (${type})`);
+    return false;
+  }
+  const frameworkChoices = typeChoices[framework];
+  if (!frameworkChoices) {
+    console.error(
+      `there is no starter corresponding to your type (${type}), framework ${framework}`
+    );
+    return false;
+  }
+  const starter = frameworkChoices[lang];
+  if (!starter) {
+    console.error(
+      `there is no starter corresponding to your type (${type}), framework (${framework}) and programming language (${lang})`
+    );
+    const answer = await inquirer.prompt({
+      name: `Use default starter (${DEFAULT_STARTER})`,
+      type: 'confirm',
+    });
+    if (answer) {
+      return DEFAULT_STARTER;
+    }
+    return false;
+  }
+  return starter;
+};
 
 /**
  * checks for the existence of yarn package
@@ -212,6 +245,7 @@ const replaceProjectName = async (rootPath, fullName, projectName) => {
       silent: true,
     });
   } catch (e) {
+    // todo: add logger
     console.error(e);
   } finally {
     process.chdir(prevDir);
@@ -237,15 +271,38 @@ const writeChangeLog = async (rootPath) => {
   }
 };
 
-const initStarter = async (options = {}) => {
+/**
+ *
+ * @param {{ starter?:  string,
+ *  name: string,
+ *  type: "app",
+ *  framework: "react",
+ *  lang: "ts" | "js",
+ *  githubActions: boolean,
+ *  graaspAppId: string,
+ *  p?: string }
+ * } options Selected options to initialize the starter
+ * @returns whether the initialization has succeeded
+ */
+async function initStarter(options) {
   const {
-    starter = DEFAULT_STARTER,
+    starter: userProvidedStarter,
     name,
     type,
+    framework,
+    lang,
     githubActions,
     graaspAppId,
     p = DEFAULT_PATH,
   } = options;
+  let starter = userProvidedStarter;
+
+  if (!starter) {
+    starter = await getStarter(type, framework, lang);
+    if (!starter) {
+      return false;
+    }
+  }
 
   // enforce naming convention
   const projectName = `graasp-${type}-${name
@@ -271,6 +328,12 @@ const initStarter = async (options = {}) => {
 
   // clone starter kit to project directory
   const hostedInfo = HostedGitInfo.fromUrl(starter);
+  if (!hostedInfo) {
+    console.error(
+      `"${starter}" could not be resolved to a git repository, please provide a valid repository address`
+    );
+    return false;
+  }
   await clone(hostedInfo, projectDirectory);
 
   // write environment files
@@ -301,6 +364,6 @@ const initStarter = async (options = {}) => {
   await writeChangeLog(projectDirectory);
 
   return commit(projectDirectory);
-};
+}
 
 export default initStarter;
