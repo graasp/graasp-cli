@@ -1729,7 +1729,7 @@ __metadata:
     execa: 6.1.0
     fs-exists-cached: 1.0.0
     fs-extra: 10.1.0
-    hosted-git-info: 5.1.0
+    hosted-git-info: 6.0.0
     husky: 8.0.1
     inquirer: 9.1.3
     lodash: 4.17.21
@@ -4408,12 +4408,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:5.1.0":
-  version: 5.1.0
-  resolution: "hosted-git-info@npm:5.1.0"
+"hosted-git-info@npm:6.0.0":
+  version: 6.0.0
+  resolution: "hosted-git-info@npm:6.0.0"
   dependencies:
     lru-cache: ^7.5.1
-  checksum: 22abbc6a7418344c883e2df6e791e94b38192b2a61256b19c955999d878b8d5365ea51683fd1f0cc8f217e9bd121db88d5aaa7cf0407c4b7ff287b79aabacbd3
+  checksum: 85aeb79a1902416eab622ccffd61ccf428260b0f8949e02f5abe70ee2702b7af2bdd7a9b77e6573190464602d42bb05c4d8300873f86ce62bc450365398da1fb
   languageName: node
   linkType: hard
 
