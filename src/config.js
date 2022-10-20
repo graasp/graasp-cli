@@ -7,10 +7,8 @@ export const ENV_TEMPLATE_FOLDER = '.env_templates';
 
 // define types of starters that exist
 export const STARTER_TYPE_APP = 'app';
-export const STARTER_TYPE_LAB = 'lab';
 export const STARTER_TYPE_CHOICES = {
   [STARTER_TYPE_APP]: 'App',
-  [STARTER_TYPE_LAB]: 'Lab',
 };
 
 // define frameworks supported

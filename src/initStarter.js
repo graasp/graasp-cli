@@ -262,15 +262,6 @@ const checkDeploymentMethod = async (rootPath, useGithubActions) => {
   }
 };
 
-const writeChangeLog = async (rootPath) => {
-  const string = '# Change Log';
-  try {
-    await fs.writeFile(path.join(rootPath, 'CHANGELOG.md'), string, 'utf8');
-  } catch (e) {
-    console.error(e);
-  }
-};
-
 /**
  *
  * @param {{ starter?:  string,
@@ -359,9 +350,6 @@ async function initStarter(options) {
 
   // write readme
   await writeReadme(projectDirectory, name, type);
-
-  // write empty changelog
-  await writeChangeLog(projectDirectory);
 
   return commit(projectDirectory);
 }

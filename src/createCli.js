@@ -10,12 +10,9 @@ import createPackageFile from './createPackageFile.js';
 const promisify =
   (fn) =>
   (...args) => {
-    Promise.resolve(fn(...args)).then(
-      () => {
-        process.exit(0);
-      }
-      // err => report.panic(err)
-    );
+    Promise.resolve(fn(...args)).then(() => {
+      process.exit(0);
+    });
   };
 
 const createCli = (argv) => {
