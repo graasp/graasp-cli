@@ -1,5 +1,5 @@
 // todo: change to the main branch
-export const DEFAULT_STARTER = 'graasp/graasp-app-starter-ts#1/initRepo';
+export const DEFAULT_STARTER = 'graasp/graasp-app-starter-ts';
 export const DEFAULT_FRAMEWORK = 'react';
 export const DEFAULT_PATH = './';
 export const BUILD_DIRECTORY = 'build';
