@@ -32,10 +32,8 @@ export const STARTERS = {
   [STARTER_TYPE_APP]: {
     [FRAMEWORK_REACT]: {
       [LANGUAGE_TYPESCRIPT]: DEFAULT_STARTER,
-      [LANGUAGE_JAVASCRIPT]: undefined,
     },
   },
-  [STARTER_TYPE_LAB]: undefined,
 };
 
 export const BUILD_PACKAGE_NAME = 'package.zip';

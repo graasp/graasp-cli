@@ -7,7 +7,6 @@ import {
   FRAMEWORK_REACT,
   LANGUAGE_CHOICES,
   LANGUAGE_TYPESCRIPT,
-  LANGUAGE_JAVASCRIPT,
 } from './config.js';
 import initStarter from './initStarter.js';
 
@@ -54,7 +53,7 @@ const prompt = async (opts) => {
         },
       ],
       filter: (val) => val.toLowerCase(),
-      when: () => Boolean(!starter) || Boolean(!framework),
+      when: () => Boolean(!starter) && Boolean(!framework),
     },
     {
       type: 'list',
@@ -67,10 +66,6 @@ const prompt = async (opts) => {
           value: LANGUAGE_TYPESCRIPT,
         },
         // todo: add another template for JS
-        {
-          name: LANGUAGE_CHOICES[LANGUAGE_JAVASCRIPT],
-          value: LANGUAGE_JAVASCRIPT,
-        },
       ],
       filter: (val) => val.toLowerCase(),
       when: () => Boolean(!starter),
