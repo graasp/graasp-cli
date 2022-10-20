@@ -14,6 +14,6 @@ Move to a directory where you would like to clone a test project, e.g. `cd ~/my-
 
 Run the CLI by using the full path from that directory to the `lib` folder inside this repository.
 
-```
+```bash
 node ~/code/graasp/tools/graasp-cli/lib new
 ```

@@ -1,4 +1,4 @@
-import execa from 'execa';
+import { execa } from 'execa';
 
 // use execa to spawn a better child process
 /* eslint-disable-next-line import/prefer-default-export */

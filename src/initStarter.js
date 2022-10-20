@@ -3,14 +3,57 @@ import path from 'path';
 import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import util from 'util';
+import replaceInFilePkg from 'replace-in-file';
+import { replace as replaceJSON } from 'replace-json-property';
 import HostedGitInfo from 'hosted-git-info';
-import del from 'del';
-import { sync as existsSync } from 'fs-exists-cached';
-import { DEFAULT_PATH, DEFAULT_STARTER, GRAASP_IGNORE_FILE } from './config';
-import writeEnvFiles from './writeEnvFiles';
-import { spawn } from './utils';
+import { deleteSync } from 'del';
+import fsExistsCached from 'fs-exists-cached';
+import inquirer from 'inquirer';
+import {
+  DEFAULT_PATH,
+  DEFAULT_STARTER,
+  GRAASP_IGNORE_FILE,
+  HTML_TEMPLATE,
+  STARTERS,
+  YAML_TEMPLATE,
+} from './config.js';
+import writeEnvFiles from './writeEnvFiles.js';
+import { spawn } from './utils.js';
 
+const { sync: existsSync } = fsExistsCached;
+const { replaceInFile } = replaceInFilePkg;
 const readFile = util.promisify(fs.readFile);
+
+// chooses the starter to use based on type, framework and language
+const getStarter = async (type, framework, lang) => {
+  const typeChoices = STARTERS[type];
+  if (!typeChoices) {
+    console.error(`there is no starter corresponding to your type (${type})`);
+    return false;
+  }
+  const frameworkChoices = typeChoices[framework];
+  if (!frameworkChoices) {
+    console.error(
+      `there is no starter corresponding to your type (${type}), framework ${framework}`
+    );
+    return false;
+  }
+  const starter = frameworkChoices[lang];
+  if (!starter) {
+    console.error(
+      `there is no starter corresponding to your type (${type}), framework (${framework}) and programming language (${lang})`
+    );
+    const answer = await inquirer.prompt({
+      name: `Use default starter (${DEFAULT_STARTER})`,
+      type: 'confirm',
+    });
+    if (answer) {
+      return DEFAULT_STARTER;
+    }
+    return false;
+  }
+  return starter;
+};
 
 /**
  * checks for the existence of yarn package
@@ -35,8 +78,13 @@ const install = async (rootPath) => {
   process.chdir(rootPath);
 
   try {
-    const cmd = shouldUseYarn() ? spawn('yarnpkg') : spawn('npm install');
-    await cmd;
+    if (shouldUseYarn()) {
+      console.log('switching to yarn v2...');
+      await spawn('yarn set version berry');
+      await spawn('yarn');
+    } else {
+      await spawn('npm install');
+    }
   } finally {
     process.chdir(prevDir);
   }
@@ -57,7 +105,7 @@ const removeIgnoredFiles = async (rootPath) => {
     const files = lines.filter((line) => line !== '');
 
     // delete matching files, including hidden ones
-    del.sync(files, { dot: true });
+    deleteSync(files, { dot: true });
   } catch (e) {
     console.error(e);
   } finally {
@@ -65,7 +113,7 @@ const removeIgnoredFiles = async (rootPath) => {
   }
 };
 
-// creates an new git repository
+// creates a new git repository
 const initGit = async (rootPath) => {
   const prevDir = process.cwd();
 
@@ -83,12 +131,12 @@ const initGit = async (rootPath) => {
 const commit = async (rootPath) => {
   const prevDir = process.cwd();
 
-  console.log('performing initial commit...');
+  console.log('performing initial commit (running linter and tests)...');
   process.chdir(rootPath);
 
   try {
     await spawn('git add -A', { stdio: 'ignore' });
-
+    console.log('this may take some time');
     // cannot spawn this because of the way we are splitting the command
     execSync('git commit -m "chore: initial commit from graasp cli"', {
       stdio: 'ignore',
@@ -146,32 +194,112 @@ const writeReadme = async (rootPath, name, type) => {
   }
 };
 
-const writeChangeLog = async (rootPath) => {
-  const string = '# Change Log';
+const replaceInFilesByType = async (patterns, template, newValue) => {
+  const options = {
+    files: patterns,
+    from: new RegExp(template, 'g'),
+    to: newValue,
+  };
   try {
-    await fs.writeFile(path.join(rootPath, 'CHANGELOG.md'), string, 'utf8');
+    const res = await replaceInFile(options);
+    return res.filter((f) => f.hasChanged);
   } catch (e) {
-    console.error(e);
+    return [];
   }
 };
 
-const initStarter = async (options = {}) => {
+const replaceProjectName = async (rootPath, fullName, projectName) => {
+  const prevDir = process.cwd();
+  console.log('branding project...');
+  process.chdir(rootPath);
+  try {
+    // replace in yaml
+    const yamlFiles = await Promise.all(
+      ['.github/workflows/*.yaml', '.github/workflows/*.yml'].map(
+        async (pattern) =>
+          replaceInFilesByType(pattern, YAML_TEMPLATE, fullName)
+      )
+    );
+    console.log(
+      'Yaml files:',
+      yamlFiles.flat().map((f) => f.file)
+    );
+
+    // replace in html
+    const htmlFiles = await replaceInFilesByType(
+      'public/*.html',
+      HTML_TEMPLATE,
+      fullName
+    );
+    console.log(
+      'HTML files:',
+      htmlFiles.map((f) => f.file)
+    );
+
+    // replace name in package.json
+    replaceJSON('./package.json', 'name', projectName, { silent: true });
+    replaceJSON('./public/manifest.json', 'name', projectName, {
+      silent: true,
+    });
+    replaceJSON('./public/manifest.json', 'short_name', projectName, {
+      silent: true,
+    });
+  } catch (e) {
+    // todo: add logger
+    console.error(e);
+  } finally {
+    process.chdir(prevDir);
+  }
+};
+
+const checkDeploymentMethod = async (rootPath, useGithubActions) => {
+  if (!useGithubActions) {
+    try {
+      await fs.remove(path.join(rootPath, '.github'));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
+
+/**
+ *
+ * @param {{ starter?:  string,
+ *  name: string,
+ *  type: "app",
+ *  framework: "react",
+ *  lang: "ts" | "js",
+ *  githubActions: boolean,
+ *  graaspAppId: string,
+ *  p?: string }
+ * } options Selected options to initialize the starter
+ * @returns whether the initialization has succeeded
+ */
+async function initStarter(options) {
   const {
-    starter = DEFAULT_STARTER,
+    starter: userProvidedStarter,
     name,
     type,
-    graaspDeveloperId,
+    framework,
+    lang,
+    githubActions,
     graaspAppId,
-    awsAccessKeyId,
-    awsSecretAccessKey,
     p = DEFAULT_PATH,
   } = options;
+  let starter = userProvidedStarter;
+
+  if (!starter) {
+    starter = await getStarter(type, framework, lang);
+    if (!starter) {
+      return false;
+    }
+  }
 
   // enforce naming convention
-  const projectDirectory = path.join(
-    p,
-    `graasp-${type}-${name.split(' ').join('-')}`.toLowerCase()
-  );
+  const projectName = `graasp-${type}-${name
+    .split(' ')
+    .join('-')}`.toLowerCase();
+  const projectDirectory = path.join(p, projectName);
 
   // check for existing project in project directory
   if (existsSync(path.join(projectDirectory, 'package.json'))) {
@@ -191,12 +319,25 @@ const initStarter = async (options = {}) => {
 
   // clone starter kit to project directory
   const hostedInfo = HostedGitInfo.fromUrl(starter);
+  if (!hostedInfo) {
+    console.error(
+      `"${starter}" could not be resolved to a git repository, please provide a valid repository address`
+    );
+    return false;
+  }
   await clone(hostedInfo, projectDirectory);
+
+  // write environment files
+  await writeEnvFiles(projectDirectory, {
+    graaspAppId,
+  });
 
   // only remove ignored files if graaspignore file detected
   if (existsSync(path.join(projectDirectory, GRAASP_IGNORE_FILE))) {
     await removeIgnoredFiles(projectDirectory);
   }
+
+  await replaceProjectName(projectDirectory, name, projectName);
 
   await initGit(projectDirectory);
 
@@ -204,21 +345,13 @@ const initStarter = async (options = {}) => {
 
   await install(projectDirectory);
 
-  // write environment files
-  await writeEnvFiles(projectDirectory, {
-    graaspDeveloperId,
-    graaspAppId,
-    awsAccessKeyId,
-    awsSecretAccessKey,
-  });
+  // deployment method (removes .github directory when not using GitHub Actions)
+  await checkDeploymentMethod(projectDirectory, githubActions);
 
   // write readme
   await writeReadme(projectDirectory, name, type);
 
-  // write empty changelog
-  await writeChangeLog(projectDirectory);
-
   return commit(projectDirectory);
-};
+}
 
 export default initStarter;
