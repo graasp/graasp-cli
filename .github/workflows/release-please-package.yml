@@ -1,0 +1,41 @@
+# automate relases for a library package
+name: Release new version
+
+# Control when the action will run
+on:
+  # Triggers the workflow on push events except for the main branch
+  push:
+    branches: [ "main" ]
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # uses the GitHub action from google to automate releases.
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: node
+          # You should change this to the repo name
+          package-name: @graasp/cli
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"docs","section":"Documentation","hidden":false}]'
+
+      # checkout the code to get the latest version
+      - uses: actions/checkout@v3
+
+      # in case a release was created, this will create or update the major and minor tags
+      # so you can refer to `v1` or `v1.1` and get the latest version corresponding to that prefix.
+      - name: Tag major and minor versions
+        uses: jacobsvante/tag-major-minor-action@v0.1
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          major: ${{ steps.release.outputs.major }}
+          minor: ${{ steps.release.outputs.minor }}
+
+      # -------------------------------------------------------------------------
+      # This section is useful only if you plan on publishing your package to NPM
+      # Remove it if you do not plan to publish to NPM
+      - name: Publish to NPM
+        uses: graasp/graasp-deploy/.github/actions/publish-to-NPM@v1
+        if: ${{ steps.release.outputs.release_created }}
+      # -------------------------------------------------------------------------
