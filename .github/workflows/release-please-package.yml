@@ -5,7 +5,7 @@ name: Release new version
 on:
   # Triggers the workflow on push events except for the main branch
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   release-please:
@@ -36,6 +36,6 @@ jobs:
       # This section is useful only if you plan on publishing your package to NPM
       # Remove it if you do not plan to publish to NPM
       - name: Publish to NPM
-        uses: graasp/graasp-deploy/.github/actions/publish-to-NPM@v1
+        uses: graasp/graasp-deploy/.github/actions/publish-to-npm@v1
         if: ${{ steps.release.outputs.release_created }}
       # -------------------------------------------------------------------------
