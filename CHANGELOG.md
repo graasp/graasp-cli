@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.1](https://github.com/graasp/graasp-cli/compare/v0.5.0...v0.5.1) (2022-12-08)
+
+
+### Bug Fixes
+
+* input to npm publish action ([#78](https://github.com/graasp/graasp-cli/issues/78)) ([c7d73ae](https://github.com/graasp/graasp-cli/commit/c7d73aee04e42d5cc086cc56ba68609161524390))
+* release-please action name ([#77](https://github.com/graasp/graasp-cli/issues/77)) ([d175b46](https://github.com/graasp/graasp-cli/commit/d175b466d8cb4a13e825af5d69bdd60c6b1a91ac))
+
+
+### Documentation
+
+* add citation to readme ([e21e1b7](https://github.com/graasp/graasp-cli/commit/e21e1b7f0fc0878bbe24a5b52bf07e073ba57962))
+
 ## [0.5.0](https://github.com/graasp/graasp-cli/compare/v0.4.2...v0.5.0) (2022-10-20)
 
 ### Features
