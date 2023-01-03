@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.2](https://github.com/graasp/graasp-cli/compare/v0.5.1...v0.5.2) (2023-01-03)
+
+
+### Bug Fixes
+
+* **deps:** update deps with resolutions ([f18795f](https://github.com/graasp/graasp-cli/commit/f18795fd2419e493e3f6ae6d5d5ec1f281a65b9e))
+
 ## [0.5.1](https://github.com/graasp/graasp-cli/compare/v0.5.0...v0.5.1) (2022-12-08)
 
 
