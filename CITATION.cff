@@ -27,7 +27,7 @@ preferred-citation:
     given-names: "Denis"
     orcid: "https://orcid.org/0000-0002-2570-929X"
   doi: "10.4995/HEAD22.2022.15652"
-  booktitle: "HEAd'22 Conference Proceedings"
+  collection-title: "HEAd'22 Conference Proceedings"
   start: 883
   end: 890
   title: "Supporting Developers in Creating Web Apps for Education via an App Development Framework"
