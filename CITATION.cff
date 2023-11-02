@@ -1,4 +1,5 @@
 cff-version: 1.2.0
+key: farah2022supporting
 message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Farah"
@@ -32,5 +33,5 @@ preferred-citation:
   end: 890
   title: "Supporting Developers in Creating Web Apps for Education via an App Development Framework"
   publisher: "Editorial Universitat Politècnica de València"
-  address: "Valencia, Spain"
+  location: "Valencia, Spain"
   year: 2022
