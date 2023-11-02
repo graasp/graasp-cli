@@ -1,6 +1,6 @@
 # Graasp CLI
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
@@ -56,6 +56,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/spaenleh"><img src="https://avatars.githubusercontent.com/u/39373170?v=4?s=100" width="100px;" alt="Basile Spaenlehauer"/><br /><sub><b>Basile Spaenlehauer</b></sub></a><br /><a href="https://github.com/graasp/graasp-cli/commits?author=spaenleh" title="Code">💻</a> <a href="#ideas-spaenleh" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/pyphilia"><img src="https://avatars.githubusercontent.com/u/11229627?v=4?s=100" width="100px;" alt="Kim Lan Phan Hoang"/><br /><sub><b>Kim Lan Phan Hoang</b></sub></a><br /><a href="https://github.com/graasp/graasp-cli/commits?author=pyphilia" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ugGit"><img src="https://avatars.githubusercontent.com/u/22294372?v=4?s=100" width="100px;" alt="ugGit"/><br /><sub><b>ugGit</b></sub></a><br /><a href="https://github.com/graasp/graasp-cli/commits?author=ugGit" title="Code">💻</a> <a href="#research-ugGit" title="Research">🔬</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://stuartingram.com"><img src="https://avatars.githubusercontent.com/u/337349?v=4?s=100" width="100px;" alt="Stuart Ingram"/><br /><sub><b>Stuart Ingram</b></sub></a><br /><a href="#research-singram" title="Research">🔬</a> <a href="#content-singram" title="Content">🖋</a></td>
     </tr>
   </tbody>
 </table>
