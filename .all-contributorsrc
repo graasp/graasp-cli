@@ -61,6 +61,16 @@
         "fundingFinding",
         "financial"
       ]
+    },
+    {
+      "login": "sandyingram",
+      "name": "singram",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2852218?v=4",
+      "profile": "https://github.com/sandyingram",
+      "contributions": [
+        "research",
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
