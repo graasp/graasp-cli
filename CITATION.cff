@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-key: farah2022supporting
+citekey: farah2022supporting
 message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Farah"
@@ -33,5 +33,9 @@ preferred-citation:
   end: 890
   title: "Supporting Developers in Creating Web Apps for Education via an App Development Framework"
   publisher: "Editorial Universitat Politècnica de València"
-  location: "Valencia, Spain"
+  location:
+    name: Valencia, Spain
+  conference: 8th International Conference on Higher Education Advances (HEAd 2022)
+    name:
+    address: Valencia, Spain
   year: 2022
