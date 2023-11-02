@@ -59,6 +59,18 @@
         "research",
         "content"
       ]
+    },
+    {
+      "login": "dgillet",
+      "name": "Denis Gillet",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2817393?v=4",
+      "profile": "http://people.epfl.ch/denis.gillet",
+      "contributions": [
+        "content",
+        "research",
+        "fundingFinding",
+        "financial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
