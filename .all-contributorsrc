@@ -49,6 +49,16 @@
         "code",
         "research"
       ]
+    },
+    {
+      "login": "singram",
+      "name": "Stuart Ingram",
+      "avatar_url": "https://avatars.githubusercontent.com/u/337349?v=4",
+      "profile": "http://stuartingram.com",
+      "contributions": [
+        "research",
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
