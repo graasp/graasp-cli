@@ -39,6 +39,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ugGit",
+      "name": "ugGit",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22294372?v=4",
+      "profile": "https://github.com/ugGit",
+      "contributions": [
+        "code",
+        "research"
+      ]
     }
   ],
   "contributorsPerLine": 7,
