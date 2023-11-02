@@ -33,8 +33,8 @@ preferred-citation:
   title: "Supporting Developers in Creating Web Apps for Education via an App Development Framework"
   publisher: "Editorial Universitat Politècnica de València"
   location:
-    name: Valencia, Spain
-  conference: 8th International Conference on Higher Education Advances (HEAd 2022)
-    name:
+    name: "Valencia, Spain"
+  conference:
+    name: 8th International Conference on Higher Education Advances (HEAd 2022)
     address: Valencia, Spain
   year: 2022
