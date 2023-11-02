@@ -1,4 +1,7 @@
 # Graasp CLI
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
@@ -38,3 +41,25 @@ Run the CLI by using the full path from that directory to the `lib` folder insid
 ```bash
 node ~/code/graasp/tools/graasp-cli/lib new
 ```
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://juancarlosfarah.com"><img src="https://avatars.githubusercontent.com/u/1707188?v=4?s=100" width="100px;" alt="Juan Carlos Farah"/><br /><sub><b>Juan Carlos Farah</b></sub></a><br /><a href="#ideas-juancarlosfarah" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/graasp/graasp-cli/commits?author=juancarlosfarah" title="Code">💻</a> <a href="#talk-juancarlosfarah" title="Talks">📢</a> <a href="#userTesting-juancarlosfarah" title="User Testing">📓</a> <a href="#content-juancarlosfarah" title="Content">🖋</a> <a href="#research-juancarlosfarah" title="Research">🔬</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
