@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.3](https://github.com/graasp/graasp-cli/compare/v0.5.2...v0.5.3) (2023-11-02)
+
+
+### Documentation
+
+* add citation file ([bd9c308](https://github.com/graasp/graasp-cli/commit/bd9c308fdbf3f51e46adf2b44ab7a483b17189ab))
+* bringing back citekey ([1b1a87e](https://github.com/graasp/graasp-cli/commit/1b1a87e5a97a58094e89c3d79688af239945553d))
+* comply with cff citation format ([742b8fe](https://github.com/graasp/graasp-cli/commit/742b8fe378d22e34aa84011a1223f3d4f81f78e2))
+* create .all-contributorsrc [skip ci] ([dff4725](https://github.com/graasp/graasp-cli/commit/dff4725e554cb4ec3492938f3ff70c0b6accea2f))
+* fix cff citation format ([1758403](https://github.com/graasp/graasp-cli/commit/1758403999b2e1e7aec582511b514624f6b6efe8))
+* fix key and address ([6fb2dc7](https://github.com/graasp/graasp-cli/commit/6fb2dc7ecdfedbf9e128647c6daf6f4124d4daf1))
+* fix parse errors ([527ab2e](https://github.com/graasp/graasp-cli/commit/527ab2ec05cf569f869cc90b90a44a8a26260c5e))
+* last attempt to fix citekey ([f082845](https://github.com/graasp/graasp-cli/commit/f082845f4b6245a954684bcb4e9f07be2203df68))
+* remove wrong collaborator ([7ee5019](https://github.com/graasp/graasp-cli/commit/7ee5019ef5ec92eb2974055b54b092339562ea60))
+* removing citekey ([70f581f](https://github.com/graasp/graasp-cli/commit/70f581f31b667755dfaf6561e2cc98a613d89655))
+* removing citekey ([40b9546](https://github.com/graasp/graasp-cli/commit/40b9546153e2080a06da93ec6675ada7ad576049))
+* update .all-contributorsrc [skip ci] ([4a0d471](https://github.com/graasp/graasp-cli/commit/4a0d471b13b3e3f3b5a4cc7e03cc950a1988bb6b))
+* update .all-contributorsrc [skip ci] ([29ac391](https://github.com/graasp/graasp-cli/commit/29ac391f7c4fc63d576c88939702b357d04365e5))
+* update .all-contributorsrc [skip ci] ([cff6341](https://github.com/graasp/graasp-cli/commit/cff6341a4e357a8bd9ac799ddfb33a9f59d41c77))
+* update .all-contributorsrc [skip ci] ([a8db1f9](https://github.com/graasp/graasp-cli/commit/a8db1f9e3f3b5e693a7714338551b360f76bd909))
+* update .all-contributorsrc [skip ci] ([bf04536](https://github.com/graasp/graasp-cli/commit/bf04536b995938c66001989606db505a0da3b119))
+* update .all-contributorsrc [skip ci] ([36a9e76](https://github.com/graasp/graasp-cli/commit/36a9e76f14ea30638dee0d70aacbecb5931ba096))
+* update README.md [skip ci] ([7bf2d8b](https://github.com/graasp/graasp-cli/commit/7bf2d8ba17631525b799dee7a7c17df9a21a3bca))
+* update README.md [skip ci] ([dd41a15](https://github.com/graasp/graasp-cli/commit/dd41a15daae3c4194749dabdcd9b1ba6f3b84592))
+* update README.md [skip ci] ([c9d1574](https://github.com/graasp/graasp-cli/commit/c9d1574b2f881b04d0b51516d73f34d5db4791ce))
+* update README.md [skip ci] ([2fa4668](https://github.com/graasp/graasp-cli/commit/2fa46682190ae9000a7f81b73ff8eccb8414483c))
+* update README.md [skip ci] ([6247568](https://github.com/graasp/graasp-cli/commit/6247568ec8e1d3c2ed8409515e34fecf6695ed4d))
+* update README.md [skip ci] ([b9f6760](https://github.com/graasp/graasp-cli/commit/b9f6760a702037698b052854e3c0373be1b1d57b))
+* update README.md [skip ci] ([e481c06](https://github.com/graasp/graasp-cli/commit/e481c06cb9a75334a6204e3ca54a05f179bd805c))
+
 ## [0.5.2](https://github.com/graasp/graasp-cli/compare/v0.5.1...v0.5.2) (2023-01-03)
 
 
